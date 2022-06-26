@@ -18,8 +18,8 @@ public class Main extends JPanel implements ActionListener{
 
     int center_x;
     int center_y;
-    int map_size_x = 30;
-    int map_size_y = 24;
+    int map_size_x = 20;
+    int map_size_y = 20;
     double player_x = 0;
     double player_y = 0;
     double cursorx, cursory;
@@ -40,15 +40,15 @@ public class Main extends JPanel implements ActionListener{
 
     void Add_units() {
         Random random = new Random();
-        Unit_spawn("elf", 0, 0, 0, true);
+        Unit_spawn("elf", 0, 10, 0, true);
 
-        for(int i = 20; i < 30; i += 10) {
-            Unit_spawn("elf", i, random.nextInt(10) - 20, 0, false);
-        }
-
-        for(int i = 20; i < 40; i += 10) {
-            Unit_spawn("skeleton", i, random.nextInt(10) - 120, Math.PI, false);
-        }
+//        for(int i = 20; i < 30; i += 10) {
+//            Unit_spawn("elf", i, random.nextInt(10) - 20, 0, false);
+//        }
+//
+//        for(int i = 20; i < 40; i += 10) {
+//            Unit_spawn("skeleton", i, random.nextInt(10) - 120, Math.PI, false);
+//        }
     }
 
     void Unit_spawn(String type, double x, double y, double angle, boolean player) {
@@ -294,6 +294,9 @@ public class Main extends JPanel implements ActionListener{
                         player_move(isUp, isDown, isLeft, isRight);
                     } else {
                         if (unit.hp < 0) {
+                            Fallen_object body = new Fallen_object(Math.round(unit.x), Math.round(unit.y), unit.angle);
+                            body.setType(unit.type);
+                            hexes[i][j].fallens.add(body);
                             hexes[i][j].units.remove(k);
                         }
                         AI_move(unit);
@@ -332,12 +335,18 @@ public class Main extends JPanel implements ActionListener{
                                         if (unit.player == 1) {
                                             player_x += Math.sin(i_angle) * dif;
                                             player_y -= Math.cos(i_angle) * dif;
+                                        } else {
+                                            unit.t_x = unit.x;
+                                            unit.t_y = unit.y;
                                         }
                                         other_unit.x -= Math.sin(i_angle) * dif;
                                         other_unit.y += Math.cos(i_angle) * dif;
                                         if (other_unit.player == 1) {
                                             player_x -= Math.sin(i_angle) * dif;
                                             player_y += Math.cos(i_angle) * dif;
+                                        } else {
+                                            unit.t_x = unit.x;
+                                            unit.t_y = unit.y;
                                         }
                                     }
                                 }
@@ -510,8 +519,8 @@ public class Main extends JPanel implements ActionListener{
                 do {
                     unit.t_x = unit.x + random.nextInt(71) - 35;
                     unit.t_y = unit.y + random.nextInt(71) - 35;
-                } while (unit.t_x < -map_size_x / 2 * 35 || unit.t_x > map_size_x / 2 * 35 ||
-                        unit.t_y < -map_size_y / 2 * 35 || unit.t_y > map_size_y / 2 * 35);
+                } while (unit.t_x < -map_size_x / 2 * 35 + 105 || unit.t_x > map_size_x / 2 * 35 - 105 ||
+                        unit.t_y < -map_size_y / 2 * 35 + 105 || unit.t_y > map_size_y / 2 * 35 - 105);
             }
         }
 

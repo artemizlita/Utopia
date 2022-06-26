@@ -3,6 +3,7 @@ import java.lang.Math;
 class Unit_object {
     int player;
     String fraction;
+    String type;
     double x;
     double y;
     double angle;
@@ -30,6 +31,7 @@ class Unit_object {
 
     void setType(String type) {
         if (type == "elf") {
+            this.type = "elf";
             this.pics_move[0] = "data\\elf\\move0.png";
             this.pics_move[1] = "data\\elf\\move1.png";
             this.pics_hit[0] = "data\\elf\\shot0.png";
@@ -41,6 +43,7 @@ class Unit_object {
             this.speed = 20;
         }
         if (type == "skeleton") {
+            this.type = "skeleton";
             this.pics_move[0] = "data\\skeleton\\move0.png";
             this.pics_move[1] = "data\\skeleton\\move1.png";
             this.pics_hit[0] = "data\\skeleton\\shot0.png";

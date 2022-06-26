@@ -34,6 +34,37 @@ public class World_generating {
             add_camp();
         }
 
+        for (int i = 0; i < localities.size(); i++) {
+            for (int j = i + 1; j < localities.size(); j++) {
+                if (localities.get(j).distance_to_cross > localities.get(i).distance_to_cross) {
+                    Collections.swap(localities, i, j);
+                }
+            }
+        }
+
+        for (int i = 0; i < localities.size(); i++) {
+            int path = localities.size() - 1;
+            double path_gip = localities.size() - 1;
+            for (int j = i + 1; j < localities.size() - 1; j++) {
+                if (!localities.get(j).there_road) {
+                    double x1 = localities.get(i).x;
+                    double x2 = localities.get(j).x;
+                    double y1 = localities.get(i).y;
+                    double y2 = localities.get(j).y;
+                    double gip = Math.pow((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2), 0.5);
+                    if (gip < path_gip) {
+                        path = j;
+                        path_gip = gip;
+                    }
+                }
+            }
+            add_path(i, path);
+            if (localities.get(path).type == "camp") {
+                localities.get(path).there_road = true;
+            }
+            localities.get(i).there_road = true;
+        }
+
         Random random = new Random();
         String type;
         int coord_x, coord_y;
@@ -69,15 +100,15 @@ public class World_generating {
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
                 hexes[coord_x + i][coord_y + j].hex_type = "central_cross";
-                Land_object road = new Land_object(x + 35 * i, y, 0);
-                road.setType("road");
-                hexes[coord_x + i][coord_y].lands.add(road);
-                road = new Land_object(x, y + 35 * j, 0);
-                road.setType("road");
-                hexes[coord_x][coord_y + j].lands.add(road);
             }
         }
+        Land_object road = new Land_object(x, y, 0);
+        road.setType("road");
+        hexes[coord_x][coord_y].lands.add(road);
         localities.add(new Locality_object(x, y, 0, "central_cross"));
+        for(int i = -1; i <= 1; i ++) {
+            Unit_spawn("elf", x + i, y, 0);
+        }
     }
 
     void add_camp() {
@@ -110,11 +141,54 @@ public class World_generating {
             Land_object camp = new Land_object(x, y, 0);
             if (random.nextBoolean()) {
                 camp.setType("camp_birch");
+                for(int i = -1; i <= 1; i ++) {
+                    Unit_spawn("elf", x + i, y, 0);
+                }
             } else {
                 camp.setType("camp_fir");
+                for(int i = -1; i <= 1; i ++) {
+                    Unit_spawn("skeleton", x + i, y, 0);
+                }
             }
             hexes[coord_x][coord_y].lands.add(camp);
+            hexes[coord_x][coord_y].hex_type = "camp";
         }
+    }
+
+    void add_path(int i, int j) {
+        Random random = new Random();
+        boolean r = random.nextBoolean();
+        int min = ((int) Math.min(localities.get(i).x, localities.get(j).x));
+        int max = ((int) Math.max(localities.get(i).x, localities.get(j).x));
+        int other_coord_x, other_coord_y;
+        if (r) {
+            other_coord_y = (int) localities.get(j).y;
+        } else {
+            other_coord_y = (int) localities.get(i).y;
+        }
+        for (int x = min + 35; x < max; x += 35) {
+            Land_object road = new Land_object(x, other_coord_y, 0);
+            road.setType("road");
+            hexes[x / 35 + map_size_x / 2][other_coord_y / 35 + map_size_y / 2].lands.add(road);
+            hexes[x / 35 + map_size_x / 2][other_coord_y / 35 + map_size_y / 2].hex_type = "road";
+        }
+        min = (int) (Math.min(localities.get(i).y, localities.get(j).y));
+        max = (int) (Math.max(localities.get(i).y, localities.get(j).y));
+        if (r) {
+            other_coord_x = (int) localities.get(i).x;
+        } else {
+            other_coord_x = (int) localities.get(j).x;
+        }
+        for (int y = min + 35; y < max; y += 35) {
+            Land_object road = new Land_object(other_coord_x, y, 0);
+            road.setType("road");
+            hexes[other_coord_x / 35 + map_size_x / 2][y / 35 + map_size_y / 2].lands.add(road);
+            hexes[other_coord_x / 35 + map_size_x / 2][y / 35 + map_size_y / 2].hex_type = "road";
+        }
+        Land_object road = new Land_object(other_coord_x, other_coord_y, 0);
+        road.setType("road");
+        hexes[other_coord_x / 35 + map_size_x / 2][other_coord_y / 35 + map_size_y / 2].lands.add(road);
+        hexes[other_coord_x / 35 + map_size_x / 2][other_coord_y / 35 + map_size_y / 2].hex_type = "road";
     }
 
     void add_forest(int x, int y, String type, int size, int max_size) {
@@ -154,5 +228,13 @@ public class World_generating {
                 add_forest(x, y + 35, type, size - 1, max_size);
             }
         }
+    }
+
+    void Unit_spawn(String type, double x, double y, double angle) {
+        Unit_object unit = new Unit_object(x, y, angle);
+        unit.setType(type);
+        double hex_x = x / 35 + map_size_x / 2;
+        double hex_y = y / 35 + map_size_y / 2;
+        hexes[(int) hex_x][(int) hex_y].units.add(unit);
     }
 }

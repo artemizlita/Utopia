@@ -41,5 +41,14 @@ class Fallen_object {
             this.pic = "data\\locations\\objects\\feed.png";
             this.pic_size = 23;
         }
+
+        if (type == "skeleton") {
+            this.pic = "data\\fallens\\skeleton.png";
+            this.pic_size = 21;
+        }
+        if (type == "elf") {
+            this.pic = "data\\fallens\\elf.png";
+            this.pic_size = 21;
+        }
     }
 }
