@@ -84,8 +84,8 @@ public class World_generating {
             }
             if (hexes[coord_x][coord_y].hex_type != "birch" &&
                     hexes[coord_x][coord_y].hex_type != "green_small_tree") {
-                int x = (coord_x - map_size_x / 2) * 35;
-                int y = (coord_y - map_size_y / 2) * 35;
+                int x = (coord_x - map_size_x / 2) * 27;
+                int y = (coord_y - map_size_y / 2) * 27;
                 int size = random.nextInt((map_size_x + map_size_y) / 12) + (map_size_x + map_size_y) / 12;
                 add_forest(x, y, type, size, size);
             }
@@ -97,11 +97,7 @@ public class World_generating {
         double y = 0;
         int coord_x = map_size_x / 2;
         int coord_y = map_size_y / 2;
-        for (int i = -1; i <= 1; ++i) {
-            for (int j = -1; j <= 1; ++j) {
-                hexes[coord_x + i][coord_y + j].hex_type = "central_cross";
-            }
-        }
+        hexes[coord_x][coord_y].hex_type = "central_cross";
         Land_object road = new Land_object(x, y, 0);
         road.setType("road");
         hexes[coord_x][coord_y].lands.add(road);
@@ -120,10 +116,10 @@ public class World_generating {
         int coord_x, coord_y;
         do {
             city_is_near = false;
-            coord_x = random.nextInt(map_size_x - 7) + 4;
-            coord_y = random.nextInt(map_size_y - 7) + 4;
-            x = ((coord_x - map_size_x / 2) * 35);
-            y = ((coord_y - map_size_y / 2) * 35);
+            coord_x = random.nextInt(map_size_x - 9) + 5;
+            coord_y = random.nextInt(map_size_y - 9) + 5;
+            x = ((coord_x - map_size_x / 2) * 27);
+            y = ((coord_y - map_size_y / 2) * 27);
             for (int k = 0; k < localities.size(); k++) {
                 double gip = Math.pow((x - localities.get(k).x) * (x - localities.get(k).x) +
                         (y - localities.get(k).y) * (y - localities.get(k).y), 0.5);
@@ -166,11 +162,13 @@ public class World_generating {
         } else {
             other_coord_y = (int) localities.get(i).y;
         }
-        for (int x = min + 35; x < max; x += 35) {
-            Land_object road = new Land_object(x, other_coord_y, 0);
-            road.setType("road");
-            hexes[x / 35 + map_size_x / 2][other_coord_y / 35 + map_size_y / 2].lands.add(road);
-            hexes[x / 35 + map_size_x / 2][other_coord_y / 35 + map_size_y / 2].hex_type = "road";
+        for (int x = min + 27; x < max; x += 27) {
+            if (hexes[x / 27 + map_size_x / 2][other_coord_y / 27 + map_size_y / 2].hex_type == "nothing") {
+                Land_object road = new Land_object(x, other_coord_y, 0);
+                road.setType("road");
+                hexes[x / 27 + map_size_x / 2][other_coord_y / 27 + map_size_y / 2].lands.add(road);
+                hexes[x / 27 + map_size_x / 2][other_coord_y / 27 + map_size_y / 2].hex_type = "road";
+            }
         }
         min = (int) (Math.min(localities.get(i).y, localities.get(j).y));
         max = (int) (Math.max(localities.get(i).y, localities.get(j).y));
@@ -179,22 +177,26 @@ public class World_generating {
         } else {
             other_coord_x = (int) localities.get(j).x;
         }
-        for (int y = min + 35; y < max; y += 35) {
-            Land_object road = new Land_object(other_coord_x, y, 0);
-            road.setType("road");
-            hexes[other_coord_x / 35 + map_size_x / 2][y / 35 + map_size_y / 2].lands.add(road);
-            hexes[other_coord_x / 35 + map_size_x / 2][y / 35 + map_size_y / 2].hex_type = "road";
+        for (int y = min + 27; y < max; y += 27) {
+            if (hexes[other_coord_x / 27 + map_size_x / 2][y / 27 + map_size_y / 2].hex_type == "nothing") {
+                Land_object road = new Land_object(other_coord_x, y, 0);
+                road.setType("road");
+                hexes[other_coord_x / 27 + map_size_x / 2][y / 27 + map_size_y / 2].lands.add(road);
+                hexes[other_coord_x / 27 + map_size_x / 2][y / 27 + map_size_y / 2].hex_type = "road";
+            }
         }
-        Land_object road = new Land_object(other_coord_x, other_coord_y, 0);
-        road.setType("road");
-        hexes[other_coord_x / 35 + map_size_x / 2][other_coord_y / 35 + map_size_y / 2].lands.add(road);
-        hexes[other_coord_x / 35 + map_size_x / 2][other_coord_y / 35 + map_size_y / 2].hex_type = "road";
+        if (hexes[other_coord_x / 27 + map_size_x / 2][other_coord_y / 27 + map_size_y / 2].hex_type == "nothing") {
+            Land_object road = new Land_object(other_coord_x, other_coord_y, 0);
+            road.setType("road");
+            hexes[other_coord_x / 27 + map_size_x / 2][other_coord_y / 27 + map_size_y / 2].lands.add(road);
+            hexes[other_coord_x / 27 + map_size_x / 2][other_coord_y / 27 + map_size_y / 2].hex_type = "road";
+        }
     }
 
     void add_forest(int x, int y, String type, int size, int max_size) {
         Random random = new Random();
-        int hex_x = x / 35 + map_size_x / 2;
-        int hex_y = y / 35 + map_size_y / 2;
+        int hex_x = x / 27 + map_size_x / 2;
+        int hex_y = y / 27 + map_size_y / 2;
         if (hexes[hex_x][hex_y].hex_type == "nothing") {
             hexes[hex_x][hex_y].hex_type = type;
             int x_in_heks = random.nextInt(33) - 17;
@@ -205,27 +207,27 @@ public class World_generating {
         }
         int chance;
         chance = random.nextInt(max_size);
-        if ((x - 35) > - map_size_x / 2 * 35) {
+        if ((x - 27) > - map_size_x / 2 * 27) {
             if (chance < size) {
-                add_forest(x - 35, y, type, size - 1, max_size);
+                add_forest(x - 27, y, type, size - 1, max_size);
             }
         }
         chance = random.nextInt(max_size);
-        if ((x + 35) < map_size_x / 2 * 35) {
+        if ((x + 27) < map_size_x / 2 * 27) {
             if (chance < size) {
-                add_forest(x + 35, y, type, size - 1, max_size);
+                add_forest(x + 27, y, type, size - 1, max_size);
             }
         }
         chance = random.nextInt(max_size);
-        if ((y - 35) > - map_size_y / 2 * 35) {
+        if ((y - 27) > - map_size_y / 2 * 27) {
             if (chance < size) {
-                add_forest(x, y - 35, type, size - 1, max_size);
+                add_forest(x, y - 27, type, size - 1, max_size);
             }
         }
         chance = random.nextInt(max_size);
-        if ((y + 35) < map_size_y / 2 * 35) {
+        if ((y + 27) < map_size_y / 2 * 27) {
             if (chance < size) {
-                add_forest(x, y + 35, type, size - 1, max_size);
+                add_forest(x, y + 27, type, size - 1, max_size);
             }
         }
     }
@@ -233,8 +235,8 @@ public class World_generating {
     void Unit_spawn(String type, double x, double y, double angle) {
         Unit_object unit = new Unit_object(x, y, angle);
         unit.setType(type);
-        double hex_x = x / 35 + map_size_x / 2;
-        double hex_y = y / 35 + map_size_y / 2;
+        double hex_x = x / 27 + map_size_x / 2;
+        double hex_y = y / 27 + map_size_y / 2;
         hexes[(int) hex_x][(int) hex_y].units.add(unit);
     }
 }

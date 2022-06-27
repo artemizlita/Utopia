@@ -18,8 +18,8 @@ public class Main extends JPanel implements ActionListener{
 
     int center_x;
     int center_y;
-    int map_size_x = 20;
-    int map_size_y = 20;
+    int map_size_x = 60;
+    int map_size_y = 40;
     double player_x = 0;
     double player_y = 0;
     double cursorx, cursory;
@@ -54,8 +54,8 @@ public class Main extends JPanel implements ActionListener{
     void Unit_spawn(String type, double x, double y, double angle, boolean player) {
         Unit_object unit = new Unit_object(x, y, angle);
         unit.setType(type);
-        double hex_x = x / 35 + map_size_x / 2;
-        double hex_y = y / 35 + map_size_y / 2;
+        double hex_x = x / 27 + map_size_x / 2;
+        double hex_y = y / 27 + map_size_y / 2;
         if (player) {
             player_x = x;
             player_y = y;
@@ -101,19 +101,19 @@ public class Main extends JPanel implements ActionListener{
             }
         });
 
-//        frame.addMouseWheelListener(new MouseAdapter() {
-//            public void mouseWheelMoved(MouseWheelEvent e) {
-//                if (e.getWheelRotation() < 0) {
-//                    if (scale < 4) {
-//                        scale *= 2;
-//                    }
-//                } else if (e.getWheelRotation() > 0) {
-//                    if (scale > 1) {
-//                        scale /= 2;
-//                    }
-//                }
-//            }
-//        });
+        frame.addMouseWheelListener(new MouseAdapter() {
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.getWheelRotation() < 0) {
+                    if (scale < 4) {
+                        scale *= 2;
+                    }
+                } else if (e.getWheelRotation() > 0) {
+                    if (scale > 1) {
+                        scale /= 2;
+                    }
+                }
+            }
+        });
 
         frame.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
@@ -163,11 +163,11 @@ public class Main extends JPanel implements ActionListener{
             for (int i = 0; i < map_size_x; i++) {
                 for (int j = 0; j < map_size_y; j++) {
                     for (int k = 0; k < hexes[i][j].lands.size(); k++) {
-                        if ((35 * i - map_size_x * 35 < player_x + 2 * center_x) &
-                                (35 * i - map_size_x * 35 > player_x - 2 * center_x) &
-                                (35 * j - map_size_y * 35 < player_y + 2 * center_y) &
-                                (35 * j - map_size_y * 35 > player_y - 2 * center_y)) {
-                            Land_object land = hexes[i][j].lands.get(k);
+                        Land_object land = hexes[i][j].lands.get(k);
+                        if ((land.x > player_x - (center_x + land.pic_size)) &
+                                (land.x < player_x + (center_x + land.pic_size)) &
+                                (land.y > player_y - (center_y + land.pic_size)) &
+                                (land.y < player_y + (center_y + land.pic_size))) {
                             paint_Sprite(g, new ImageIcon(land.pic).getImage(), land.angle, false,
                                     (int) (center_x + (land.x - land.pic_size / 2 - player_x) * scale),
                                     (int) (center_y + (land.y - land.pic_size / 2 - player_y) * scale));
@@ -179,11 +179,11 @@ public class Main extends JPanel implements ActionListener{
             for (int i = 0; i < map_size_x; i++) {
                 for (int j = 0; j < map_size_y; j++) {
                     for (int k = 0; k < hexes[i][j].fallens.size(); k++) {
-                        if ((35 * i - map_size_x * 35 < player_x + 2 * center_x) &
-                                (35 * i - map_size_x * 35 > player_x - 2 * center_x) &
-                                (35 * j - map_size_y * 35 < player_y + 2 * center_y) &
-                                (35 * j - map_size_y * 35 > player_y - 2 * center_y)) {
-                            Fallen_object fallen = hexes[i][j].fallens.get(k);
+                        Fallen_object fallen = hexes[i][j].fallens.get(k);
+                        if ((fallen.x > player_x - (center_x + fallen.pic_size)) &
+                                (fallen.x < player_x + (center_x + fallen.pic_size)) &
+                                (fallen.y > player_y - (center_y + fallen.pic_size)) &
+                                (fallen.y < player_y + (center_y + fallen.pic_size))) {
                             paint_Sprite(g, new ImageIcon(fallen.pic).getImage(), fallen.angle, false,
                                     (int) (center_x + (fallen.x - fallen.pic_size / 2 - player_x) * scale),
                                     (int) (center_y + (fallen.y - fallen.pic_size / 2 - player_y) * scale));
@@ -195,11 +195,11 @@ public class Main extends JPanel implements ActionListener{
             for (int i = 0; i < map_size_x; i++) {
                 for (int j = 0; j < map_size_y; j++) {
                     for (int k = 0; k < hexes[i][j].units.size(); k++) {
-                        if ((35 * (i - map_size_x) < player_x + 2 * center_x) &
-                                (35 * (i - map_size_x) > player_x - 2 * center_x) &
-                                (35 * (j - map_size_y) < player_y + 2 * center_y) &
-                                (35 * (j - map_size_y) > player_y - 2 * center_y)) {
-                            Unit_object unit = hexes[i][j].units.get(k);
+                        Unit_object unit = hexes[i][j].units.get(k);
+                        if ((unit.x > player_x - (center_x + unit.pic_size)) &
+                                (unit.x < player_x + (center_x + unit.pic_size)) &
+                                (unit.y > player_y - (center_y + unit.pic_size)) &
+                                (unit.y < player_y + (center_y + unit.pic_size))) {
                             paint_Sprite(g, new ImageIcon(unit.pics_move[(unit.wealth / 20) % 2]).getImage(),
                                     unit.angle, false,
                                     (int) (center_x + (unit.x - unit.pic_size / 2 - player_x) * scale),
@@ -216,11 +216,11 @@ public class Main extends JPanel implements ActionListener{
             for (int i = 0; i < map_size_x; i++) {
                 for (int j = 0; j < map_size_y; j++) {
                     for (int k = 0; k < hexes[i][j].shots.size(); k++) {
-                        if ((35 * (i - map_size_x) < player_x + 2 * center_x) &
-                                (35 * (i - map_size_x) > player_x - 2 * center_x) &
-                                (35 * (j - map_size_y) < player_y + 2 * center_y) &
-                                (35 * (j - map_size_y) > player_y - 2 * center_y)) {
-                            Shot_object shot = hexes[i][j].shots.get(k);
+                        Shot_object shot = hexes[i][j].shots.get(k);
+                        if ((shot.x > player_x - (center_x + shot.pic_size)) &
+                                (shot.x < player_x + (center_x + shot.pic_size)) &
+                                (shot.y > player_y - (center_y + shot.pic_size)) &
+                                (shot.y < player_y + (center_y + shot.pic_size))) {
                             paint_Sprite(g, new ImageIcon(shot.pic).getImage(), shot.angle, false,
                                     (int) (center_x + (shot.x - shot.pic_size / 2 - player_x) * scale),
                                     (int) (center_y + (shot.y - shot.pic_size / 2 - player_y) * scale));
@@ -232,11 +232,11 @@ public class Main extends JPanel implements ActionListener{
             for (int i = 0; i < map_size_x; i++) {
                 for (int j = 0; j < map_size_y; j++) {
                     for (int k = 0; k < hexes[i][j].barriers.size(); k++) {
-                        if ((35 * (i - map_size_x) < player_x + 2 * center_x) &
-                                (35 * (i - map_size_x) > player_x - 2 * center_x) &
-                                (35 * (j - map_size_y) < player_y + 2 * center_y) &
-                                (35 * (j - map_size_y) > player_y - 2 * center_y)) {
-                            Barrier_object barrier = hexes[i][j].barriers.get(k);
+                        Barrier_object barrier = hexes[i][j].barriers.get(k);
+                        if ((barrier.x > player_x - (center_x + barrier.pic_size)) &
+                                (barrier.x < player_x + (center_x + barrier.pic_size)) &
+                                (barrier.y > player_y - (center_y + barrier.pic_size)) &
+                                (barrier.y < player_y + (center_y + barrier.pic_size))) {
                             paint_Sprite(g, new ImageIcon(barrier.pic).getImage(), barrier.angle, false,
                                     (int) (center_x + (barrier.x - barrier.pic_size / 2 - player_x) * scale),
                                     (int) (center_y + (barrier.y - barrier.pic_size / 2 - player_y) * scale));
@@ -309,8 +309,8 @@ public class Main extends JPanel implements ActionListener{
                             double shot_y = unit.y - Math.cos(unit.angle) * 10;
                             Shot_object arrow = new Shot_object(shot_x, shot_y, unit.angle);
                             arrow.setType("arrow");
-                            hex_x = shot_x / 35 + map_size_x / 2;
-                            hex_y = shot_x / 35 + map_size_x / 2;
+                            hex_x = shot_x / 27 + map_size_x / 2;
+                            hex_y = shot_y / 27 + map_size_y / 2;
                             hexes[(int) hex_x][(int) hex_y].shots.add(arrow);
                         }
                     }
@@ -409,8 +409,8 @@ public class Main extends JPanel implements ActionListener{
             for (int j = 0; j < map_size_y; j++) {
                 for (int k = 0; k < hexes[i][j].units.size(); k++) {
                     Unit_object unit = hexes[i][j].units.get(k);
-                    hex_x = unit.x / 35 + map_size_x / 2;
-                    hex_y = unit.y / 35 + map_size_y / 2;
+                    hex_x = unit.x / 27 + map_size_x / 2;
+                    hex_y = unit.y / 27 + map_size_y / 2;
                     if (hex_x != i || hex_y != j) {
                         hexes[i][j].units.remove(k);
                         if (unit.player == 1) {
@@ -423,8 +423,8 @@ public class Main extends JPanel implements ActionListener{
 
                 for (int k = 0; k < hexes[i][j].shots.size(); k++) {
                     Shot_object shot = hexes[i][j].shots.get(k);
-                    hex_x = shot.x / 35 + map_size_x / 2;
-                    hex_y = shot.y / 35 + map_size_y / 2;
+                    hex_x = shot.x / 27 + map_size_x / 2;
+                    hex_y = shot.y / 27 + map_size_y / 2;
                     if (hex_x != i || hex_y != j) {
                         hexes[i][j].shots.remove(k);
                         hexes[(int) hex_x][(int) hex_y].shots.add(shot);
@@ -441,8 +441,8 @@ public class Main extends JPanel implements ActionListener{
     }
 
     void player_move(boolean isUp, boolean isDown, boolean isLeft, boolean isRight) {
-        double hex_x = player_x / 35 + map_size_x / 2;
-        double hex_y = player_y / 35 + map_size_y / 2;
+        double hex_x = player_x / 27 + map_size_x / 2;
+        double hex_y = player_y / 27 + map_size_y / 2;
         Unit_object player_unit = hexes[(int) hex_x][(int) hex_y].units.get(0);
 
         player_unit.old_x = player_unit.x;
@@ -489,15 +489,15 @@ public class Main extends JPanel implements ActionListener{
     }
 
     void AI_move(Unit_object unit) {
-        int hex_x = (int) (unit.x / 35 + map_size_x / 2);
-        int hex_y = (int) (unit.y / 35 + map_size_y / 2);
+        int hex_x = (int) (unit.x / 27 + map_size_x / 2);
+        int hex_y = (int) (unit.y / 27 + map_size_y / 2);
 
         unit.old_x = unit.x;
         unit.old_y = unit.y;
 
         double mingip = 105;
-        for (int i = -3; i <= 3; i++) {
-            for (int j = -3; j <= 3; j++) {
+        for (int i = -4; i <= 4; i++) {
+            for (int j = -4; j <= 4; j++) {
                 for (int k = 0; k < hexes[hex_x + i][hex_y + j].units.size(); k++) {
                     Unit_object other_unit = hexes[hex_x + i][hex_y + j].units.get(k);
                     double gip = Math.pow((unit.x - other_unit.x) * (unit.x - other_unit.x) +
@@ -517,10 +517,10 @@ public class Main extends JPanel implements ActionListener{
                     (unit.y - unit.t_y) * (unit.y - unit.t_y), 0.5);
             if (gip < unit.speed / 25) {
                 do {
-                    unit.t_x = unit.x + random.nextInt(71) - 35;
-                    unit.t_y = unit.y + random.nextInt(71) - 35;
-                } while (unit.t_x < -map_size_x / 2 * 35 + 105 || unit.t_x > map_size_x / 2 * 35 - 105 ||
-                        unit.t_y < -map_size_y / 2 * 35 + 105 || unit.t_y > map_size_y / 2 * 35 - 105);
+                    unit.t_x = unit.x + random.nextInt(55) - 27;
+                    unit.t_y = unit.y + random.nextInt(55) - 27;
+                } while (unit.t_x < -map_size_x / 2 * 27 + 108 || unit.t_x > map_size_x / 2 * 27 - 108 ||
+                        unit.t_y < -map_size_y / 2 * 27 + 108 || unit.t_y > map_size_y / 2 * 27 - 108);
             }
         }
 
