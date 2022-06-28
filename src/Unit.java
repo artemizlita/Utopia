@@ -2,6 +2,7 @@ import java.lang.Math;
 
 class Unit_object {
     int player;
+    int localities;
     String fraction;
     String type;
     double x;
