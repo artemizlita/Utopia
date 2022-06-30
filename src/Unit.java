@@ -13,15 +13,18 @@ class Unit_object {
     double old_x;
     double old_y;
 
-    int cooldown = 0;
+    String weapon;
+    double attack_distance = 90;
     int max_cooldown = 49;
+    int max_hp = 100;
+    double speed = 20;
+
+    int cooldown = 0;
     String[] pics_move = new String[2];
     String[] pics_hit = new String[5];
     double size = 7;
     double pic_size = 21;
-    double speed = 20;
     int hp = 100;
-    int max_hp = 100;
     int wealth = 20000;
 
     Unit_object(double x, double y, double angle) {
@@ -31,27 +34,39 @@ class Unit_object {
     }
 
     void setType(String type) {
-        if (type == "elf") {
-            this.type = "elf";
-            this.pics_move[0] = "data\\elf\\move0.png";
-            this.pics_move[1] = "data\\elf\\move1.png";
-            this.pics_hit[0] = "data\\elf\\shot0.png";
-            this.pics_hit[1] = "data\\elf\\shot4.png";
-            this.pics_hit[2] = "data\\elf\\shot3.png";
-            this.pics_hit[3] = "data\\elf\\shot2.png";
-            this.pics_hit[4] = "data\\elf\\shot1.png";
+        if (type == "elf_archer") {
+            this.weapon = "bow";
+            this.pics_move[0] = "data\\units\\elf_archer\\move0.png";
+            this.pics_move[1] = "data\\units\\elf_archer\\move1.png";
+            this.pics_hit[0] = "data\\units\\elf_archer\\shot0.png";
+            this.pics_hit[1] = "data\\units\\elf_archer\\shot4.png";
+            this.pics_hit[2] = "data\\units\\elf_archer\\shot3.png";
+            this.pics_hit[3] = "data\\units\\elf_archer\\shot2.png";
+            this.pics_hit[4] = "data\\units\\elf_archer\\shot1.png";
             this.fraction = "elf";
-            this.speed = 20;
+            this.speed = 30;
         }
-        if (type == "skeleton") {
-            this.type = "skeleton";
-            this.pics_move[0] = "data\\skeleton\\move0.png";
-            this.pics_move[1] = "data\\skeleton\\move1.png";
-            this.pics_hit[0] = "data\\skeleton\\shot0.png";
-            this.pics_hit[1] = "data\\skeleton\\shot4.png";
-            this.pics_hit[2] = "data\\skeleton\\shot3.png";
-            this.pics_hit[3] = "data\\skeleton\\shot2.png";
-            this.pics_hit[4] = "data\\skeleton\\shot1.png";
+        if (type == "elf_swordman") {
+            this.weapon = "sword";
+            this.pics_move[0] = "data\\units\\elf_swordman\\move0.png";
+            this.pics_move[1] = "data\\units\\elf_swordman\\move1.png";
+            this.pics_hit[0] = "data\\units\\elf_swordman\\shot0.png";
+            this.pics_hit[1] = "data\\units\\elf_swordman\\shot4.png";
+            this.pics_hit[2] = "data\\units\\elf_swordman\\shot3.png";
+            this.pics_hit[3] = "data\\units\\elf_swordman\\shot2.png";
+            this.pics_hit[4] = "data\\units\\elf_swordman\\shot1.png";
+            this.fraction = "elf";
+            this.speed = 30;
+        }
+        if (type == "skeleton_archer") {
+            this.weapon = "bow";
+            this.pics_move[0] = "data\\units\\skeleton_archer\\move0.png";
+            this.pics_move[1] = "data\\units\\skeleton_archer\\move1.png";
+            this.pics_hit[0] = "data\\units\\skeleton_archer\\shot0.png";
+            this.pics_hit[1] = "data\\units\\skeleton_archer\\shot4.png";
+            this.pics_hit[2] = "data\\units\\skeleton_archer\\shot3.png";
+            this.pics_hit[3] = "data\\units\\skeleton_archer\\shot2.png";
+            this.pics_hit[4] = "data\\units\\skeleton_archer\\shot1.png";
             this.fraction = "skeleton";
             this.speed = 15;
         }
@@ -59,6 +74,7 @@ class Unit_object {
         t_y = y;
         old_x = x;
         old_y = y;
+        hp = max_hp;
     }
 
     public void set_target(double target_x, double target_y) {
@@ -104,105 +120,30 @@ class Unit_object {
         }
     }
 
-//    boolean unit_barrier_intersection(Barrier_object barrier) {
-//        double x1 = this.x;
-//        double y1 = this.y;
-//        double gip1 = Math.pow((this.size[0]/2)*(this.size[0]/2) + (this.size[1]/2)*(this.size[1]/2), 0.5);
-//
-//        double x2 = barrier.x;
-//        double y2 = barrier.y;
-//        double gip2 = Math.pow((barrier.size[0]/2)*(barrier.size[0]/2) + (barrier.size[1]/2)*(barrier.size[1]/2), 0.5);
-//
-//        if ((gip1 + gip2) > Math.pow((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2), 0.5)) {
-//            double ax1 = gip1 * Math.cos(-this.angle + Math.asin(this.size[1] / 2 / gip1)) + x1;
-//            double ay1 = -gip1 * Math.sin(-this.angle + Math.asin(this.size[1] / 2 / gip1)) + y1;
-//            double bx1 = gip1 * Math.cos(-this.angle - Math.asin(this.size[1] / 2 / gip1)) + x1;
-//            double by1 = -gip1 * Math.sin(-this.angle - Math.asin(this.size[1] / 2 / gip1)) + y1;
-//            double cx1 = gip1 * Math.cos(-this.angle + Math.PI + Math.asin(this.size[1] / 2 / gip1)) + x1;
-//            double cy1 = -gip1 * Math.sin(-this.angle + Math.PI + Math.asin(this.size[1] / 2 / gip1)) + y1;
-//            double dx1 = gip1 * Math.cos(-this.angle + Math.PI - Math.asin(this.size[1] / 2 / gip1)) + x1;
-//            double dy1 = -gip1 * Math.sin(-this.angle + Math.PI - Math.asin(this.size[1] / 2 / gip1)) + y1;
-//
-//            double ax2 = gip2 * Math.cos(-barrier.angle + Math.asin(barrier.size[1] / 2 / gip2)) + x2;
-//            double ay2 = -gip2 * Math.sin(-barrier.angle + Math.asin(barrier.size[1] / 2 / gip2)) + y2;
-//            double bx2 = gip2 * Math.cos(-barrier.angle - Math.asin(barrier.size[1] / 2 / gip2)) + x2;
-//            double by2 = -gip2 * Math.sin(-barrier.angle - Math.asin(barrier.size[1] / 2 / gip2)) + y2;
-//            double cx2 = gip2 * Math.cos(-barrier.angle + Math.PI + Math.asin(barrier.size[1] / 2 / gip2)) + x2;
-//            double cy2 = -gip2 * Math.sin(-barrier.angle + Math.PI + Math.asin(barrier.size[1] / 2 / gip2)) + y2;
-//            double dx2 = gip2 * Math.cos(-barrier.angle + Math.PI - Math.asin(barrier.size[1] / 2 / gip2)) + x2;
-//            double dy2 = -gip2 * Math.sin(-barrier.angle + Math.PI - Math.asin(barrier.size[1] / 2 / gip2)) + y2;
-//
-//            if ((dot_in_rect(ax1, ay1, ax2, ay2, bx2, by2, cx2, cy2, dx2, dy2)) || (
-//                    dot_in_rect(bx1, by1, ax2, ay2, bx2, by2, cx2, cy2, dx2, dy2)) || (
-//                    dot_in_rect(cx1, cy1, ax2, ay2, bx2, by2, cx2, cy2, dx2, dy2)) || (
-//                    dot_in_rect(dx1, dy1, ax2, ay2, bx2, by2, cx2, cy2, dx2, dy2)) || (
-//                    dot_in_rect(ax2, ay2, ax1, ay1, bx1, by1, cx1, cy1, dx1, dy1)) || (
-//                    dot_in_rect(bx2, by2, ax1, ay1, bx1, by1, cx1, cy1, dx1, dy1)) || (
-//                    dot_in_rect(cx2, cy2, ax1, ay1, bx1, by1, cx1, cy1, dx1, dy1)) || (
-//                    dot_in_rect(dx2, dy2, ax1, ay1, bx1, by1, cx1, cy1, dx1, dy1))) {
-//                return true;
-//            }
-//            return false;
-//        }
-//        return false;
-//    }
-//
-//    boolean rect_intersection(Unit_object unit) {
-//        double x1 = this.x;
-//        double y1 = this.y;
-//        double gip1 = Math.pow((this.size[0]/2)*(this.size[0]/2) + (this.size[1]/2)*(this.size[1]/2), 0.5);
-//
-//        double x2 = unit.x;
-//        double y2 = unit.y;
-//        double gip2 = Math.pow((unit.size[0]/2)*(unit.size[0]/2) + (unit.size[1]/2)*(unit.size[1]/2), 0.5);
-//
-//        if ((gip1 + gip2) > Math.pow((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2), 0.5)) {
-//            double ax1 = gip1 * Math.cos(-this.angle + Math.asin(this.size[1] / 2 / gip1)) + x1;
-//            double ay1 = -gip1 * Math.sin(-this.angle + Math.asin(this.size[1] / 2 / gip1)) + y1;
-//            double bx1 = gip1 * Math.cos(-this.angle - Math.asin(this.size[1] / 2 / gip1)) + x1;
-//            double by1 = -gip1 * Math.sin(-this.angle - Math.asin(this.size[1] / 2 / gip1)) + y1;
-//            double cx1 = gip1 * Math.cos(-this.angle + Math.PI + Math.asin(this.size[1] / 2 / gip1)) + x1;
-//            double cy1 = -gip1 * Math.sin(-this.angle + Math.PI + Math.asin(this.size[1] / 2 / gip1)) + y1;
-//            double dx1 = gip1 * Math.cos(-this.angle + Math.PI - Math.asin(this.size[1] / 2 / gip1)) + x1;
-//            double dy1 = -gip1 * Math.sin(-this.angle + Math.PI - Math.asin(this.size[1] / 2 / gip1)) + y1;
-//
-//            double ax2 = gip2 * Math.cos(-unit.angle + Math.asin(unit.size[1] / 2 / gip2)) + x2;
-//            double ay2 = -gip2 * Math.sin(-unit.angle + Math.asin(unit.size[1] / 2 / gip2)) + y2;
-//            double bx2 = gip2 * Math.cos(-unit.angle - Math.asin(unit.size[1] / 2 / gip2)) + x2;
-//            double by2 = -gip2 * Math.sin(-unit.angle - Math.asin(unit.size[1] / 2 / gip2)) + y2;
-//            double cx2 = gip2 * Math.cos(-unit.angle + Math.PI + Math.asin(unit.size[1] / 2 / gip2)) + x2;
-//            double cy2 = -gip2 * Math.sin(-unit.angle + Math.PI + Math.asin(unit.size[1] / 2 / gip2)) + y2;
-//            double dx2 = gip2 * Math.cos(-unit.angle + Math.PI - Math.asin(unit.size[1] / 2 / gip2)) + x2;
-//            double dy2 = -gip2 * Math.sin(-unit.angle + Math.PI - Math.asin(unit.size[1] / 2 / gip2)) + y2;
-//
-//            if ((dot_in_rect(ax1, ay1, ax2, ay2, bx2, by2, cx2, cy2, dx2, dy2)) || (
-//                    dot_in_rect(bx1, by1, ax2, ay2, bx2, by2, cx2, cy2, dx2, dy2)) || (
-//                    dot_in_rect(cx1, cy1, ax2, ay2, bx2, by2, cx2, cy2, dx2, dy2)) || (
-//                    dot_in_rect(dx1, dy1, ax2, ay2, bx2, by2, cx2, cy2, dx2, dy2)) || (
-//                    dot_in_rect(ax2, ay2, ax1, ay1, bx1, by1, cx1, cy1, dx1, dy1)) || (
-//                    dot_in_rect(bx2, by2, ax1, ay1, bx1, by1, cx1, cy1, dx1, dy1)) || (
-//                    dot_in_rect(cx2, cy2, ax1, ay1, bx1, by1, cx1, cy1, dx1, dy1)) || (
-//                    dot_in_rect(dx2, dy2, ax1, ay1, bx1, by1, cx1, cy1, dx1, dy1))) {
-//                return true;
-//            }
-//            return false;
-//        }
-//        return false;
-//    }
-//
-//    boolean circle_intersection(Unit_object unit) {
-//        double x1 = this.x;
-//        double y1 = this.y;
-//        double gip1 = Math.pow((this.size[0]/2)*(this.size[0]/2) + (this.size[1]/2)*(this.size[1]/2), 0.5);
-//
-//        double x2 = unit.x;
-//        double y2 = unit.y;
-//        double gip2 = Math.pow((unit.size[0]/2)*(unit.size[0]/2) + (unit.size[1]/2)*(unit.size[1]/2), 0.5);
-//
-//        if ((gip1 + gip2) > Math.pow((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2), 0.5)) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
+    boolean sword_intersection(Unit_object unit) {
+        double x2 = this.x;
+        double y2 = this.y;
+        double x1 = unit.x;
+        double y1 = unit.y;
+
+        double gip = Math.pow(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2), 0.5);
+        double pi = Math.PI;
+        double i_angle;
+        if (x2 - x1 >= 0) {
+            i_angle = 2 * pi - Math.acos((y2 - y1) / gip);
+        } else {
+            i_angle = Math.acos((y2 - y1) / gip);
+        }
+
+        double dif = this.angle - i_angle;
+
+        System.out.println(dif);
+
+        if ((- pi / 6 < dif) && (dif < pi / 6) || (2 * pi - pi / 6 < dif) || (-2 * pi + pi / 6 < dif)) {
+            if (gip <= 12) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

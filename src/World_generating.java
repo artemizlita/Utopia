@@ -30,7 +30,7 @@ public class World_generating {
         }
 
         add_cross(true);
-        for (int k = 0; k < 10; k++) {
+        for (int k = 0; k < (map_size_x + map_size_y) / 20; k++) {
             add_cross(false);
         }
 
@@ -41,6 +41,8 @@ public class World_generating {
                 }
             }
         }
+
+        System.out.println("crosses");
 
         for (int i = 0; i < localities.size() - 1; i++) {
             int path = localities.size() - 1;
@@ -67,7 +69,9 @@ public class World_generating {
 
         int cross_count = localities.size() - 1;
 
-        for (int k = 0; k < 10; k++) {
+        System.out.println("roads");
+
+        for (int k = 0; k < (map_size_x + map_size_y) / 20; k++) {
             if (add_camp()) {
                 int i = localities.size() - 1;
                 int path = cross_count - 1;
@@ -87,11 +91,13 @@ public class World_generating {
             }
         }
 
+        System.out.println("camps");
+
         Random random = new Random();
         String type;
         int coord_x, coord_y;
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < (map_size_x + map_size_y) / 20; i++) {
             if (random.nextBoolean()) {
                 type = "birch";
             } else {
@@ -108,22 +114,80 @@ public class World_generating {
                     hexes[coord_x][coord_y].hex_type != "green_small_tree") {
                 int x = (coord_x - map_size_x / 2) * 27;
                 int y = (coord_y - map_size_y / 2) * 27;
-                int size = random.nextInt((map_size_x + map_size_y) / 12) + (map_size_x + map_size_y) / 12;
+                int size = random.nextInt(10) + 10;
                 add_forest(x, y, type, size, size);
             }
         }
 
+        System.out.println("forests");
+
         for (int i = 0; i < map_size_x; i++) {
             for (int j = 0; j < map_size_y; j++) {
                 if (hexes[i][j].hex_type == "nothing") {
-                    Land_object grass;
-                    grass = new Land_object((i - map_size_x / 2) * 27, (j - map_size_y / 2) * 27, 0);
-                    grass.setType("grass");
-                    hexes[i][j].lands.add(grass);
                     hexes[i][j].hex_type = "grass";
+
+                    for (int k = 0; k < 9; k++) {
+                        int x_in_hex = 27 * (i - map_size_x / 2) + random.nextInt(27) - 13;
+                        int y_in_hex = 27 * (j - map_size_y / 2) + random.nextInt(27) - 13;
+                        Land_object grass = new Land_object(x_in_hex, y_in_hex, 0);
+                        grass.setType("grass");
+                        hexes[i][j].lands.add(grass);
+                    }
+
+                    if (random.nextBoolean()) {
+                        int x_in_hex = 27 * (i - map_size_x / 2) + random.nextInt(25) - 12;
+                        int y_in_hex = 27 * (j - map_size_y / 2) + random.nextInt(25) - 12;
+                        double angle = random.nextInt(4) * Math.PI / 2;
+                        Land_object flower = new Land_object(x_in_hex, y_in_hex, angle);
+                        flower.setType("flower");
+                        hexes[i][j].lands.add(flower);
+                    } else {
+                        if (random.nextBoolean()) {
+                            int x_in_hex = 27 * (i - map_size_x / 2) + random.nextInt(25) - 12;
+                            int y_in_hex = 27 * (j - map_size_y / 2) + random.nextInt(25) - 12;
+                            double angle = random.nextInt(4) * Math.PI / 2;
+                            Land_object flowers = new Land_object(x_in_hex, y_in_hex, angle);
+                            flowers.setType("flowers");
+                            hexes[i][j].lands.add(flowers);
+                        } else {
+                            if (random.nextBoolean()) {
+                                int x_in_hex = 27 * (i - map_size_x / 2) + random.nextInt(25) - 12;
+                                int y_in_hex = 27 * (j - map_size_y / 2) + random.nextInt(25) - 12;
+                                double angle = random.nextInt(4) * Math.PI / 2;
+                                Land_object wood = new Land_object(x_in_hex, y_in_hex, angle);
+                                wood.setType("small_wood");
+                                hexes[i][j].lands.add(wood);
+                            } else {
+                                if (random.nextBoolean()) {
+                                    int x_in_hex = 27 * (i - map_size_x / 2) + random.nextInt(21) - 10;
+                                    int y_in_hex = 27 * (j - map_size_y / 2) + random.nextInt(21) - 10;
+                                    double angle = random.nextInt(4) * Math.PI / 2;
+                                    Land_object wood = new Land_object(x_in_hex, y_in_hex, angle);
+                                    wood.setType("big_wood");
+                                    hexes[i][j].lands.add(wood);
+                                } else {
+                                    if (random.nextBoolean()) {
+                                        int x_in_hex = 27 * (i - map_size_x / 2) + random.nextInt(21) - 10;
+                                        int y_in_hex = 27 * (j - map_size_y / 2) + random.nextInt(21) - 10;
+                                        Barrier_object tree = new Barrier_object(x_in_hex, y_in_hex, 0);
+                                        tree.setType("bush");
+                                        hexes[i][j].barriers.add(tree);
+                                    } else {
+                                        int x_in_hex = 27 * (i - map_size_x / 2) + random.nextInt(21) - 10;
+                                        int y_in_hex = 27 * (j - map_size_y / 2) + random.nextInt(21) - 10;
+                                        Barrier_object tree = new Barrier_object(x_in_hex, y_in_hex, 0);
+                                        tree.setType("dead_tree");
+                                        hexes[i][j].barriers.add(tree);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+
+        System.out.println("grass");
     }
 
     void add_cross(boolean start) {
@@ -160,9 +224,7 @@ public class World_generating {
             double distance;
             if (start) {
                 distance = 0;
-                for(int i = -1; i <= 1; i ++) {
-                    Unit_spawn("elf", x + i, y, 0);
-                }
+                Unit_spawn("elf_archer", x + 20, y + 20, 0);
             } else {
                 distance = Math.pow((localities.get(0).x - x) * (localities.get(0).x - x) +
                         (localities.get(0).y - y) * (localities.get(0).y - y), 0.5);
@@ -206,12 +268,12 @@ public class World_generating {
             if (random.nextBoolean()) {
                 camp.setType("camp_birch");
                 for(int i = -1; i <= 1; i ++) {
-                    Unit_spawn("elf", x + i, y, 0);
+                    Unit_spawn("elf_archer", x + i, y, 0);
                 }
             } else {
                 camp.setType("camp_fir");
                 for(int i = -1; i <= 1; i ++) {
-                    Unit_spawn("skeleton", x + i, y, 0);
+                    Unit_spawn("skeleton_archer", x + i, y, 0);
                 }
             }
             hexes[coord_x][coord_y].lands.add(camp);
@@ -269,10 +331,26 @@ public class World_generating {
         int hex_x = x / 27 + map_size_x / 2;
         int hex_y = y / 27 + map_size_y / 2;
         if (hexes[hex_x][hex_y].hex_type == "nothing") {
+            int x_in_hex = random.nextInt(21) - 10;
+            int y_in_hex = random.nextInt(21) - 10;
+            double angle = random.nextInt(4) * Math.PI / 2;
+            Land_object wood = new Land_object(x + x_in_hex, y + y_in_hex, angle);
+            wood.setType("big_wood");
+            hexes[hex_x][hex_y].lands.add(wood);
+
+            for (int i = 0; i < 3; i++) {
+                x_in_hex = random.nextInt(25) - 12;
+                y_in_hex = random.nextInt(25) - 12;
+                angle = random.nextInt(4) * Math.PI / 2;
+                wood = new Land_object(x + x_in_hex, y + y_in_hex, angle);
+                wood.setType("small_wood");
+                hexes[hex_x][hex_y].lands.add(wood);
+            }
+
             hexes[hex_x][hex_y].hex_type = type;
-            int x_in_heks = random.nextInt(21) - 10;
-            int y_in_heks = random.nextInt(21) - 10;
-            Barrier_object tree = new Barrier_object(x + x_in_heks, y + y_in_heks, 0);
+            x_in_hex = random.nextInt(21) - 10;
+            y_in_hex = random.nextInt(21) - 10;
+            Barrier_object tree = new Barrier_object(x + x_in_hex, y + y_in_hex, 0);
             tree.setType(type);
             hexes[hex_x][hex_y].barriers.add(tree);
         }

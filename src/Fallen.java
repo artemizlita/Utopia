@@ -6,7 +6,7 @@ class Fallen_object {
     double y;
     double angle;
     String pic = "-";
-    double pic_size = 0;
+    double pic_size = 0.0;
 
     Fallen_object(double x, double y, double angle) {
         this.x = x;
@@ -30,16 +30,6 @@ class Fallen_object {
         if (type == "birch_fall") {
             this.pic = "data\\locations\\objects\\birch_fall.png";
             this.pic_size = 55;
-        }
-
-        if (type == "wooden_fence_fall") {
-            this.pic = "data\\locations\\objects\\wooden_fence_fall.png";
-            this.pic_size = 55;
-        }
-
-        if (type == "feed") {
-            this.pic = "data\\locations\\objects\\feed.png";
-            this.pic_size = 23;
         }
 
         if (type == "skeleton") {

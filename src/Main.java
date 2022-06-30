@@ -40,7 +40,7 @@ public class Main extends JPanel implements ActionListener{
 
     void Add_units() {
         Random random = new Random();
-        Unit_spawn("elf", 0, 10, 0, true);
+        Unit_spawn("elf_swordman", 0, 0, 0, true);
 
 //        for(int i = 20; i < 30; i += 10) {
 //            Unit_spawn("elf", i, random.nextInt(10) - 20, 0, false);
@@ -104,7 +104,7 @@ public class Main extends JPanel implements ActionListener{
         frame.addMouseWheelListener(new MouseAdapter() {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 if (e.getWheelRotation() < 0) {
-                    if (scale < 4) {
+                    if (scale < 8) {
                         scale *= 2;
                     }
                 } else if (e.getWheelRotation() > 0) {
@@ -160,8 +160,13 @@ public class Main extends JPanel implements ActionListener{
             g.setColor(floor);
             g.fillRect(0, 0, 1440, 900);
 
-            for (int i = 0; i < map_size_x; i++) {
-                for (int j = 0; j < map_size_y; j++) {
+            int min_i = Math.max(0, ((int) player_x - center_x / scale) / 27 + map_size_x / 2 - 1);
+            int max_i = Math.min(map_size_x, ((int) player_x + center_x / scale) / 27 + map_size_x / 2 + 2);
+            int min_j = Math.max(0, ((int) player_y - center_y / scale) / 27 + map_size_y / 2 - 1);
+            int max_j = Math.min(map_size_y, ((int) player_y + center_y / scale) / 27 + map_size_y / 2 + 2);
+
+            for (int i = min_i; i < max_i; i++) {
+                for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].lands.size(); k++) {
                         Land_object land = hexes[i][j].lands.get(k);
                         if ((land.x > player_x - (center_x + land.pic_size)) &
@@ -176,8 +181,8 @@ public class Main extends JPanel implements ActionListener{
                 }
             }
 
-            for (int i = 0; i < map_size_x; i++) {
-                for (int j = 0; j < map_size_y; j++) {
+            for (int i = min_i; i < max_i; i++) {
+                for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].fallens.size(); k++) {
                         Fallen_object fallen = hexes[i][j].fallens.get(k);
                         if ((fallen.x > player_x - (center_x + fallen.pic_size)) &
@@ -192,8 +197,8 @@ public class Main extends JPanel implements ActionListener{
                 }
             }
 
-            for (int i = 0; i < map_size_x; i++) {
-                for (int j = 0; j < map_size_y; j++) {
+            for (int i = min_i; i < max_i; i++) {
+                for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].units.size(); k++) {
                         Unit_object unit = hexes[i][j].units.get(k);
                         if ((unit.x > player_x - (center_x + unit.pic_size)) &
@@ -213,8 +218,8 @@ public class Main extends JPanel implements ActionListener{
                 }
             }
 
-            for (int i = 0; i < map_size_x; i++) {
-                for (int j = 0; j < map_size_y; j++) {
+            for (int i = min_i; i < max_i; i++) {
+                for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].shots.size(); k++) {
                         Shot_object shot = hexes[i][j].shots.get(k);
                         if ((shot.x > player_x - (center_x + shot.pic_size)) &
@@ -229,8 +234,8 @@ public class Main extends JPanel implements ActionListener{
                 }
             }
 
-            for (int i = 0; i < map_size_x; i++) {
-                for (int j = 0; j < map_size_y; j++) {
+            for (int i = min_i; i < max_i; i++) {
+                for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].barriers.size(); k++) {
                         Barrier_object barrier = hexes[i][j].barriers.get(k);
                         if ((barrier.x > player_x - (center_x + barrier.pic_size)) &
@@ -293,7 +298,7 @@ public class Main extends JPanel implements ActionListener{
                         }
                         player_move(isUp, isDown, isLeft, isRight);
                     } else {
-                        if (unit.hp < 0) {
+                        if (unit.hp <= 0) {
                             Fallen_object body = new Fallen_object(Math.round(unit.x), Math.round(unit.y), unit.angle);
                             body.setType(unit.type);
                             hexes[i][j].fallens.add(body);
@@ -305,13 +310,29 @@ public class Main extends JPanel implements ActionListener{
                     if (unit.cooldown > 0) {
                         unit.cooldown -= 1;
                         if (unit.cooldown == 19) {
-                            double shot_x = unit.x + Math.sin(unit.angle) * 10;
-                            double shot_y = unit.y - Math.cos(unit.angle) * 10;
-                            Shot_object arrow = new Shot_object(shot_x, shot_y, unit.angle);
-                            arrow.setType("arrow");
-                            hex_x = shot_x / 27 + map_size_x / 2;
-                            hex_y = shot_y / 27 + map_size_y / 2;
-                            hexes[(int) hex_x][(int) hex_y].shots.add(arrow);
+                            if (unit.weapon == "bow") {
+                                double shot_x = unit.x + Math.sin(unit.angle) * 10;
+                                double shot_y = unit.y - Math.cos(unit.angle) * 10;
+                                Shot_object arrow = new Shot_object(shot_x, shot_y, unit.angle);
+                                arrow.setType("arrow");
+                                hex_x = shot_x / 27 + map_size_x / 2;
+                                hex_y = shot_y / 27 + map_size_y / 2;
+                                hexes[(int) hex_x][(int) hex_y].shots.add(arrow);
+                            } else if (unit.weapon == "sword") {
+                                for (int bi = -1; bi <= 1; bi++) {
+                                    for (int bj = -1; bj <= 1; bj++) {
+                                        for (int bk = 0; bk < hexes[i + bi][j + bj].units.size(); bk++) {
+                                            Unit_object target_unit = hexes[i + bi][j + bj].units.get(bk);
+                                            if (!unit.equals(target_unit)) {
+                                                if (unit.sword_intersection(target_unit)) {
+                                                    target_unit.hp -= 120;
+                                                    System.out.println(hexes[i + bi][j + bj].units.get(bk).hp);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -459,32 +480,64 @@ public class Main extends JPanel implements ActionListener{
 
         double speed = player_unit.speed / 50;
         if (isUp & !isDown & !isLeft & !isRight) {
-            player_unit.x += Math.sin(player_unit.angle) * speed;
-            player_unit.y -= Math.cos(player_unit.angle) * speed;
-            player_x += Math.sin(player_unit.angle) * speed;
-            player_y -= Math.cos(player_unit.angle) * speed;
-            player_unit.wealth -= 2;
+            if (player_unit.cooldown == 0) {
+                player_unit.x += Math.sin(player_unit.angle) * speed;
+                player_unit.y -= Math.cos(player_unit.angle) * speed;
+                player_x += Math.sin(player_unit.angle) * speed;
+                player_y -= Math.cos(player_unit.angle) * speed;
+                player_unit.wealth -= 2;
+            } else {
+                player_unit.x += Math.sin(player_unit.angle) * speed / 2;
+                player_unit.y -= Math.cos(player_unit.angle) * speed / 2;
+                player_x += Math.sin(player_unit.angle) * speed / 2;
+                player_y -= Math.cos(player_unit.angle) * speed / 2;
+                player_unit.wealth -= 1;
+            }
         }
         if (!isUp & isDown & !isLeft & !isRight) {
-            player_unit.x -= Math.sin(player_unit.angle) * speed / 2;
-            player_unit.y += Math.cos(player_unit.angle) * speed / 2;
-            player_x -= Math.sin(player_unit.angle) * speed / 2;
-            player_y += Math.cos(player_unit.angle) * speed / 2;
-            player_unit.wealth -= 1;
+            if (player_unit.cooldown == 0) {
+                player_unit.x -= Math.sin(player_unit.angle) * speed;
+                player_unit.y += Math.cos(player_unit.angle) * speed;
+                player_x -= Math.sin(player_unit.angle) * speed;
+                player_y += Math.cos(player_unit.angle) * speed;
+                player_unit.wealth -= 2;
+            } else {
+                player_unit.x -= Math.sin(player_unit.angle) * speed / 2;
+                player_unit.y += Math.cos(player_unit.angle) * speed / 2;
+                player_x -= Math.sin(player_unit.angle) * speed / 2;
+                player_y += Math.cos(player_unit.angle) * speed / 2;
+                player_unit.wealth -= 1;
+            }
         }
         if (isLeft & !isRight & !isUp & !isDown) {
-            player_unit.x -= Math.cos(player_unit.angle) * speed / 2;
-            player_unit.y -= Math.sin(player_unit.angle) * speed / 2;
-            player_x -= Math.cos(player_unit.angle) * speed / 2;
-            player_y -= Math.sin(player_unit.angle) * speed / 2;
-            player_unit.wealth -= 1;
+            if (player_unit.cooldown == 0) {
+                player_unit.x -= Math.cos(player_unit.angle) * speed;
+                player_unit.y -= Math.sin(player_unit.angle) * speed;
+                player_x -= Math.cos(player_unit.angle) * speed;
+                player_y -= Math.sin(player_unit.angle) * speed;
+                player_unit.wealth -= 2;
+            } else {
+                player_unit.x -= Math.cos(player_unit.angle) * speed / 2;
+                player_unit.y -= Math.sin(player_unit.angle) * speed / 2;
+                player_x -= Math.cos(player_unit.angle) * speed / 2;
+                player_y -= Math.sin(player_unit.angle) * speed / 2;
+                player_unit.wealth -= 1;
+            }
         }
         if (!isLeft & isRight & !isUp & !isDown) {
-            player_unit.x += Math.cos(player_unit.angle) * speed / 2;
-            player_unit.y += Math.sin(player_unit.angle) * speed / 2;
-            player_x += Math.cos(player_unit.angle) * speed / 2;
-            player_y += Math.sin(player_unit.angle) * speed / 2;
-            player_unit.wealth -= 1;
+            if (player_unit.cooldown == 0) {
+                player_unit.x += Math.cos(player_unit.angle) * speed;
+                player_unit.y += Math.sin(player_unit.angle) * speed;
+                player_x += Math.cos(player_unit.angle) * speed;
+                player_y += Math.sin(player_unit.angle) * speed;
+                player_unit.wealth -= 2;
+            } else {
+                player_unit.x += Math.cos(player_unit.angle) * speed / 2;
+                player_unit.y += Math.sin(player_unit.angle) * speed / 2;
+                player_x += Math.cos(player_unit.angle) * speed / 2;
+                player_y += Math.sin(player_unit.angle) * speed / 2;
+                player_unit.wealth -= 1;
+            }
         }
     }
 
@@ -531,10 +584,17 @@ public class Main extends JPanel implements ActionListener{
                 unit.cooldown = 49;
             }
         } else {
-            double speed = unit.speed / 50;
-            unit.x += Math.sin(unit.angle) * speed;
-            unit.y -= Math.cos(unit.angle) * speed;
-            unit.wealth -= 2;
+            if (unit.cooldown == 0) {
+                double speed = unit.speed / 50;
+                unit.x += Math.sin(unit.angle) * speed;
+                unit.y -= Math.cos(unit.angle) * speed;
+                unit.wealth -= 2;
+            } else {
+                double speed = unit.speed / 50;
+                unit.x += Math.sin(unit.angle) * speed / 2;
+                unit.y -= Math.cos(unit.angle) * speed / 2;
+                unit.wealth -= 1;
+            }
         }
     }
 }

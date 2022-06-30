@@ -17,12 +17,6 @@ class Barrier_object {
     }
 
     void setType(String type) {
-        if (type == "green_tree") {
-            this.pic = "data\\objects\\green_tree.png";
-            this.pic_size = 41;
-            this.size[0] = 5;
-            this.size[1] = 5;
-        }
         if (type == "green_small_tree") {
             this.pic = "data\\objects\\green_small_tree.png";
             this.pic_size = 25;
@@ -37,6 +31,12 @@ class Barrier_object {
         }
         if (type == "birch") {
             this.pic = "data\\objects\\birch.png";
+            this.pic_size = 21;
+            this.size[0] = 3;
+            this.size[1] = 3;
+        }
+        if (type == "dead_tree") {
+            this.pic = "data\\objects\\dead_tree.png";
             this.pic_size = 21;
             this.size[0] = 3;
             this.size[1] = 3;
