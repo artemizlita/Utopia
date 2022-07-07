@@ -32,12 +32,30 @@ class Fallen_object {
             this.pic_size = 55;
         }
 
-        if (type == "skeleton") {
-            this.pic = "data\\fallens\\skeleton.png";
+        if (type == "skeleton_archer") {
+            this.pic = "data\\fallens\\skeleton_archer.png";
             this.pic_size = 21;
         }
-        if (type == "elf") {
-            this.pic = "data\\fallens\\elf.png";
+        if (type == "elf_archer") {
+            this.pic = "data\\fallens\\elf_archer.png";
+            this.pic_size = 21;
+        }
+
+        if (type == "orc_leather_crossbow") {
+            this.pic = "data\\fallens\\orc_leather_crossbow.png";
+            this.pic_size = 21;
+        }
+        if (type == "orc_leather_twohand") {
+            this.pic = "data\\fallens\\orc_leather_twohand.png";
+            this.pic_size = 35;
+        }
+
+        if (type == "skeleton_swordman") {
+            this.pic = "data\\fallens\\skeleton_swordman.png";
+            this.pic_size = 21;
+        }
+        if (type == "elf_swordman") {
+            this.pic = "data\\fallens\\elf_swordman.png";
             this.pic_size = 21;
         }
     }

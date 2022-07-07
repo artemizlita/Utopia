@@ -12,14 +12,14 @@ import java.util.List;
 
 import java.lang.Math;
 
-public class Main extends JPanel implements ActionListener{
-    Timer timer = new Timer(30, this);
+public class Main extends JPanel implements ActionListener {
+    Timer timer = new Timer(10, this);
     JFrame frame;
 
     int center_x;
     int center_y;
     int map_size_x = 60;
-    int map_size_y = 40;
+    int map_size_y = 50;
     double player_x = 0;
     double player_y = 0;
     double cursorx, cursory;
@@ -35,24 +35,28 @@ public class Main extends JPanel implements ActionListener{
 
     Hex[][] hexes = new Hex[map_size_x][map_size_y];
     List<Locality_object> localities = new ArrayList<Locality_object>();
+    List<Party_object> parties = new ArrayList<Party_object>();
 
 //////////////////////////////////////////////////////ADD UNITS/////////////////////////////////////////////////////////
 
     void Add_units() {
-        Random random = new Random();
-        Unit_spawn("elf_swordman", 0, 0, 0, true);
+        parties.add(new Party_object("orc", 0, 0));
 
-//        for(int i = 20; i < 30; i += 10) {
-//            Unit_spawn("elf", i, random.nextInt(10) - 20, 0, false);
-//        }
-//
-//        for(int i = 20; i < 40; i += 10) {
-//            Unit_spawn("skeleton", i, random.nextInt(10) - 120, Math.PI, false);
+        Unit_spawn(0, "goblin_mythril_sword", 0, 0, 0, true);
+        for (int i = 20; i < 120; i += 20) {
+            Unit_spawn(0, "orc_leather_twohand", i, -20, 0, false);
+        }
+        for (int i = 20; i < 120; i += 20) {
+            Unit_spawn(0, "orc_leather_crossbow", i, 20, 0, false);
+        }
+
+//        for (int i = 0; i < 20; i += 20) {
+//            Unit_spawn(0, "skeleton_archer", i, -100, 0, false);
 //        }
     }
 
-    void Unit_spawn(String type, double x, double y, double angle, boolean player) {
-        Unit_object unit = new Unit_object(x, y, angle);
+    void Unit_spawn(int party, String type, double x, double y, double angle, boolean player) {
+        Unit_object unit = new Unit_object(0, x, y, angle);
         unit.setType(type);
         double hex_x = x / 27 + map_size_x / 2;
         double hex_y = y / 27 + map_size_y / 2;
@@ -79,12 +83,13 @@ public class Main extends JPanel implements ActionListener{
             }
         }
 
-        World_generating new_world = new World_generating(map_size_x, map_size_y, hexes, localities);
+        Add_units();
+
+        World_generating new_world = new World_generating(map_size_x, map_size_y, hexes, localities, parties);
         new_world.Generate();
         hexes = new_world.getHexes();
         localities = new_world.getLocalities();
-
-        Add_units();
+        parties = new_world.getParties();
 
         center_x = 720;
         center_y = 450;
@@ -93,11 +98,15 @@ public class Main extends JPanel implements ActionListener{
 
         frame.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                isHit = true;
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    isHit = true;
+                }
             }
 
             public void mouseReleased(MouseEvent e) {
-                isHit = false;
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    isHit = false;
+                }
             }
         });
 
@@ -169,14 +178,9 @@ public class Main extends JPanel implements ActionListener{
                 for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].lands.size(); k++) {
                         Land_object land = hexes[i][j].lands.get(k);
-                        if ((land.x > player_x - (center_x + land.pic_size)) &
-                                (land.x < player_x + (center_x + land.pic_size)) &
-                                (land.y > player_y - (center_y + land.pic_size)) &
-                                (land.y < player_y + (center_y + land.pic_size))) {
-                            paint_Sprite(g, new ImageIcon(land.pic).getImage(), land.angle, false,
-                                    (int) (center_x + (land.x - land.pic_size / 2 - player_x) * scale),
-                                    (int) (center_y + (land.y - land.pic_size / 2 - player_y) * scale));
-                        }
+                        paint_Sprite(g, new ImageIcon(land.pic).getImage(), land.angle, false,
+                                (int) (center_x + (land.x - land.pic_size / 2 - player_x) * scale),
+                                (int) (center_y + (land.y - land.pic_size / 2 - player_y) * scale));
                     }
                 }
             }
@@ -185,14 +189,9 @@ public class Main extends JPanel implements ActionListener{
                 for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].fallens.size(); k++) {
                         Fallen_object fallen = hexes[i][j].fallens.get(k);
-                        if ((fallen.x > player_x - (center_x + fallen.pic_size)) &
-                                (fallen.x < player_x + (center_x + fallen.pic_size)) &
-                                (fallen.y > player_y - (center_y + fallen.pic_size)) &
-                                (fallen.y < player_y + (center_y + fallen.pic_size))) {
-                            paint_Sprite(g, new ImageIcon(fallen.pic).getImage(), fallen.angle, false,
-                                    (int) (center_x + (fallen.x - fallen.pic_size / 2 - player_x) * scale),
-                                    (int) (center_y + (fallen.y - fallen.pic_size / 2 - player_y) * scale));
-                        }
+                        paint_Sprite(g, new ImageIcon(fallen.pic).getImage(), fallen.angle, false,
+                                (int) (center_x + (fallen.x - fallen.pic_size / 2 - player_x) * scale),
+                                (int) (center_y + (fallen.y - fallen.pic_size / 2 - player_y) * scale));
                     }
                 }
             }
@@ -201,19 +200,15 @@ public class Main extends JPanel implements ActionListener{
                 for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].units.size(); k++) {
                         Unit_object unit = hexes[i][j].units.get(k);
-                        if ((unit.x > player_x - (center_x + unit.pic_size)) &
-                                (unit.x < player_x + (center_x + unit.pic_size)) &
-                                (unit.y > player_y - (center_y + unit.pic_size)) &
-                                (unit.y < player_y + (center_y + unit.pic_size))) {
-                            paint_Sprite(g, new ImageIcon(unit.pics_move[(unit.wealth / 20) % 2]).getImage(),
-                                    unit.angle, false,
-                                    (int) (center_x + (unit.x - unit.pic_size / 2 - player_x) * scale),
-                                    (int) (center_y + (unit.y - unit.pic_size / 2 - player_y) * scale));
-                            paint_Sprite(g, new ImageIcon(unit.pics_hit[unit.cooldown / 10]).getImage(),
-                                    unit.angle, false,
-                                    (int) (center_x + (unit.x - unit.pic_size / 2 - player_x) * scale),
-                                    (int) (center_y + (unit.y - unit.pic_size / 2 - player_y) * scale));
-                        }
+                        if (unit.wealth < 0) { unit.wealth = 20000; }
+                        paint_Sprite(g, new ImageIcon(unit.pics_move[(unit.wealth / 20) % 2]).getImage(),
+                                unit.angle, false,
+                                (int) (center_x + (unit.x - unit.pic_size / 2 - player_x) * scale),
+                                (int) (center_y + (unit.y - unit.pic_size / 2 - player_y) * scale));
+                        paint_Sprite(g, new ImageIcon(unit.pics_hit[unit.cooldown / ((unit.max_cooldown + 1) / 5)]).getImage(),
+                                unit.angle, false,
+                                (int) (center_x + (unit.x - unit.pic_size / 2 - player_x) * scale),
+                                (int) (center_y + (unit.y - unit.pic_size / 2 - player_y) * scale));
                     }
                 }
             }
@@ -222,14 +217,9 @@ public class Main extends JPanel implements ActionListener{
                 for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].shots.size(); k++) {
                         Shot_object shot = hexes[i][j].shots.get(k);
-                        if ((shot.x > player_x - (center_x + shot.pic_size)) &
-                                (shot.x < player_x + (center_x + shot.pic_size)) &
-                                (shot.y > player_y - (center_y + shot.pic_size)) &
-                                (shot.y < player_y + (center_y + shot.pic_size))) {
-                            paint_Sprite(g, new ImageIcon(shot.pic).getImage(), shot.angle, false,
-                                    (int) (center_x + (shot.x - shot.pic_size / 2 - player_x) * scale),
-                                    (int) (center_y + (shot.y - shot.pic_size / 2 - player_y) * scale));
-                        }
+                        paint_Sprite(g, new ImageIcon(shot.pic).getImage(), shot.angle, false,
+                                (int) (center_x + (shot.x - shot.pic_size / 2 - player_x) * scale),
+                                (int) (center_y + (shot.y - shot.pic_size / 2 - player_y) * scale));
                     }
                 }
             }
@@ -238,10 +228,9 @@ public class Main extends JPanel implements ActionListener{
                 for (int j = min_j; j < max_j; j++) {
                     for (int k = 0; k < hexes[i][j].barriers.size(); k++) {
                         Barrier_object barrier = hexes[i][j].barriers.get(k);
-                        if ((barrier.x > player_x - (center_x + barrier.pic_size)) &
-                                (barrier.x < player_x + (center_x + barrier.pic_size)) &
-                                (barrier.y > player_y - (center_y + barrier.pic_size)) &
-                                (barrier.y < player_y + (center_y + barrier.pic_size))) {
+                        double gip = Math.pow((barrier.x - barrier.pic_size / 2 - player_x - cursorx + 7) , 2) +
+                                Math.pow((barrier.y - barrier.pic_size / 2 - player_y - cursory + 7) , 2);
+                        if (Math.pow(gip, 0.5) > barrier.pic_size / 2) {
                             paint_Sprite(g, new ImageIcon(barrier.pic).getImage(), barrier.angle, false,
                                     (int) (center_x + (barrier.x - barrier.pic_size / 2 - player_x) * scale),
                                     (int) (center_y + (barrier.y - barrier.pic_size / 2 - player_y) * scale));
@@ -296,7 +285,9 @@ public class Main extends JPanel implements ActionListener{
                         if (unit.hp < 0) {
                             System.exit(0);
                         }
-                        player_move(isUp, isDown, isLeft, isRight);
+                        player_move(unit, isUp, isDown, isLeft, isRight);
+                        parties.get(0).t_x = unit.x;
+                        parties.get(0).t_y = unit.y;
                     } else {
                         if (unit.hp <= 0) {
                             Fallen_object body = new Fallen_object(Math.round(unit.x), Math.round(unit.y), unit.angle);
@@ -309,24 +300,39 @@ public class Main extends JPanel implements ActionListener{
 
                     if (unit.cooldown > 0) {
                         unit.cooldown -= 1;
-                        if (unit.cooldown == 19) {
-                            if (unit.weapon == "bow") {
+                        if (unit.cooldown == (unit.max_cooldown + 1) / 5 * 2) {
+                            if (unit.weapon == "bow" || unit.weapon == "crossbow") {
                                 double shot_x = unit.x + Math.sin(unit.angle) * 10;
                                 double shot_y = unit.y - Math.cos(unit.angle) * 10;
-                                Shot_object arrow = new Shot_object(shot_x, shot_y, unit.angle);
-                                arrow.setType("arrow");
+                                double angle;
+                                Random random = new Random();
+                                if (unit.weapon == "bow") {
+                                    angle = unit.angle + (random.nextInt(5) - 2) * Math.PI / 90;
+                                } else {
+                                    angle = unit.angle + (random.nextInt(3) - 1) * Math.PI / 90;
+                                }
+                                //double angle = unit.angle + 2 * Math.PI / 90;
+                                Shot_object arrow = new Shot_object(unit.fraction, shot_x, shot_y, angle);
+                                if (unit.weapon == "bow") {
+                                    arrow.setType("leather_arrow");
+                                } else {
+                                    arrow.setType("leather_bolt");
+                                }
                                 hex_x = shot_x / 27 + map_size_x / 2;
                                 hex_y = shot_y / 27 + map_size_y / 2;
                                 hexes[(int) hex_x][(int) hex_y].shots.add(arrow);
-                            } else if (unit.weapon == "sword") {
+                            } else if (unit.weapon == "sword" || unit.weapon == "twohand") {
                                 for (int bi = -1; bi <= 1; bi++) {
                                     for (int bj = -1; bj <= 1; bj++) {
                                         for (int bk = 0; bk < hexes[i + bi][j + bj].units.size(); bk++) {
                                             Unit_object target_unit = hexes[i + bi][j + bj].units.get(bk);
-                                            if (!unit.equals(target_unit)) {
+                                            if (unit.fraction != target_unit.fraction) {
                                                 if (unit.sword_intersection(target_unit)) {
-                                                    target_unit.hp -= 120;
-                                                    System.out.println(hexes[i + bi][j + bj].units.get(bk).hp);
+                                                    if (unit.weapon == "sword") {
+                                                        target_unit.hp -= 20;
+                                                    } else {
+                                                        target_unit.hp -= 30;
+                                                    }
                                                 }
                                             }
                                         }
@@ -402,7 +408,7 @@ public class Main extends JPanel implements ActionListener{
 
                 for (int k = 0; k < hexes[i][j].shots.size(); k++) {
                     Shot_object shot = hexes[i][j].shots.get(k);
-                    if (shot.distance > 80) {
+                    if (shot.distance > 95) {
                         hexes[i][j].shots.remove(k);
                     } else {
                         shot.x += Math.sin(shot.angle) * shot.speed / 50;
@@ -414,7 +420,7 @@ public class Main extends JPanel implements ActionListener{
                                     Unit_object unit = hexes[i + ni][j + nj].units.get(nk);
                                     double gip = Math.pow((unit.x - shot.x) * (unit.x - shot.x) +
                                             (unit.y - shot.y) * (unit.y - shot.y), 0.5);
-                                    if (gip < unit.size / 2) {
+                                    if (gip < unit.size / 2 && shot.fraction != unit.fraction) {
                                         unit.hp -= 20;
                                         hexes[i][j].shots.remove(k);
                                     }
@@ -461,10 +467,11 @@ public class Main extends JPanel implements ActionListener{
         System.out.println(elapsed);
     }
 
-    void player_move(boolean isUp, boolean isDown, boolean isLeft, boolean isRight) {
+    void player_move(Unit_object player_unit, boolean isUp, boolean isDown, boolean isLeft, boolean isRight) {
         double hex_x = player_x / 27 + map_size_x / 2;
         double hex_y = player_y / 27 + map_size_y / 2;
-        Unit_object player_unit = hexes[(int) hex_x][(int) hex_y].units.get(0);
+
+        //Unit_object player_unit = hexes[(int) hex_x][(int) hex_y].units.get(0);
 
         player_unit.old_x = player_unit.x;
         player_unit.old_y = player_unit.y;
@@ -549,6 +556,7 @@ public class Main extends JPanel implements ActionListener{
         unit.old_y = unit.y;
 
         double mingip = 105;
+        double target_cooldown = 0;
         for (int i = -4; i <= 4; i++) {
             for (int j = -4; j <= 4; j++) {
                 for (int k = 0; k < hexes[hex_x + i][hex_y + j].units.size(); k++) {
@@ -556,9 +564,12 @@ public class Main extends JPanel implements ActionListener{
                     double gip = Math.pow((unit.x - other_unit.x) * (unit.x - other_unit.x) +
                             (unit.y - other_unit.y) * (unit.y - other_unit.y), 0.5);
                     if (gip < mingip && unit.fraction != other_unit.fraction) {
+                        parties.get(unit.party).t_x = other_unit.x;
+                        parties.get(unit.party).t_y = other_unit.y;
                         unit.t_x = other_unit.x;
                         unit.t_y = other_unit.y;
                         mingip = gip;
+                        target_cooldown = other_unit.cooldown;
                     }
                 }
             }
@@ -570,8 +581,8 @@ public class Main extends JPanel implements ActionListener{
                     (unit.y - unit.t_y) * (unit.y - unit.t_y), 0.5);
             if (gip < unit.speed / 25) {
                 do {
-                    unit.t_x = unit.x + random.nextInt(55) - 27;
-                    unit.t_y = unit.y + random.nextInt(55) - 27;
+                    unit.t_x = parties.get(unit.party).t_x + random.nextInt(81) - 40;
+                    unit.t_y = parties.get(unit.party).t_y + random.nextInt(81) - 40;
                 } while (unit.t_x < -map_size_x / 2 * 27 + 108 || unit.t_x > map_size_x / 2 * 27 - 108 ||
                         unit.t_y < -map_size_y / 2 * 27 + 108 || unit.t_y > map_size_y / 2 * 27 - 108);
             }
@@ -579,9 +590,16 @@ public class Main extends JPanel implements ActionListener{
 
         unit.set_target(unit.t_x, unit.t_y);
 
-        if (mingip < 90) {
+//        double attack_distance;
+//        if (unit.weapon == "bow") {
+//            attack_distance = 90;
+//        } else {
+//            attack_distance = 10;
+//        }
+
+        if (mingip < unit.attack_distance) {
             if (unit.cooldown == 0) {
-                unit.cooldown = 49;
+                unit.cooldown = unit.max_cooldown;
             }
         } else {
             if (unit.cooldown == 0) {
@@ -596,5 +614,34 @@ public class Main extends JPanel implements ActionListener{
                 unit.wealth -= 1;
             }
         }
+
+//        if (0 < target_cooldown && target_cooldown < 49) {
+//            Random random = new Random();
+//            if (random.nextBoolean()) {
+//                if (unit.cooldown == 0) {
+//                    double speed = unit.speed / 50;
+//                    unit.x -= Math.cos(unit.angle) * speed;
+//                    unit.y -= Math.sin(unit.angle) * speed;
+//                    unit.wealth -= 2;
+//                } else {
+//                    double speed = unit.speed / 50;
+//                    unit.x -= Math.cos(unit.angle) * speed / 2;
+//                    unit.y -= Math.sin(unit.angle) * speed / 2;
+//                    unit.wealth -= 1;
+//                }
+//            } else {
+//                if (unit.cooldown == 0) {
+//                    double speed = unit.speed / 50;
+//                    unit.x += Math.cos(unit.angle) * speed;
+//                    unit.y += Math.sin(unit.angle) * speed;
+//                    unit.wealth -= 2;
+//                } else {
+//                    double speed = unit.speed / 50;
+//                    unit.x += Math.cos(unit.angle) * speed / 2;
+//                    unit.y += Math.sin(unit.angle) * speed / 2;
+//                    unit.wealth -= 1;
+//                }
+//            }
+//        }
     }
 }

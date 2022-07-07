@@ -4,12 +4,16 @@ public class World_generating {
     int map_size_x, map_size_y;
     Hex[][] hexes;
     List<Locality_object> localities;
+    List<Party_object> parties;
 
-    World_generating(int map_size_x, int map_size_y, Hex[][] hexes, List<Locality_object> localities) {
+    World_generating(int map_size_x, int map_size_y, Hex[][] hexes,
+                     List<Locality_object> localities,
+                     List<Party_object> parties) {
         this.map_size_x = map_size_x;
         this.map_size_y = map_size_y;
         this.hexes = hexes;
         this.localities = localities;
+        this.parties = parties;
     }
 
     Hex[][] getHexes() {
@@ -19,6 +23,8 @@ public class World_generating {
     List<Locality_object> getLocalities() {
         return this.localities;
     }
+
+    List<Party_object> getParties() { return this.parties; }
 
 ///////////////////////////////////////////////////////////MAIN/////////////////////////////////////////////////////////
 
@@ -30,8 +36,8 @@ public class World_generating {
         }
 
         add_cross(true);
-        for (int k = 0; k < (map_size_x + map_size_y) / 20; k++) {
-            add_cross(false);
+        for (int k = 0; k < map_size_x * map_size_y / 1000; k++) {
+            add_camp();
         }
 
         for (int i = 0; i < localities.size(); i++) {
@@ -42,7 +48,7 @@ public class World_generating {
             }
         }
 
-        System.out.println("crosses");
+        System.out.println("camps");
 
         for (int i = 0; i < localities.size() - 1; i++) {
             int path = localities.size() - 1;
@@ -71,7 +77,7 @@ public class World_generating {
 
         System.out.println("roads");
 
-        for (int k = 0; k < (map_size_x + map_size_y) / 20; k++) {
+        for (int k = 0; k < map_size_x * map_size_y / 1000; k++) {
             if (add_camp()) {
                 int i = localities.size() - 1;
                 int path = cross_count - 1;
@@ -87,17 +93,17 @@ public class World_generating {
                         path_gip = gip;
                     }
                 }
-                add_path(i, path);
+                //add_path(i, path);
             }
         }
 
-        System.out.println("camps");
+        System.out.println("other_camps");
 
         Random random = new Random();
         String type;
         int coord_x, coord_y;
 
-        for (int i = 0; i < (map_size_x + map_size_y) / 20; i++) {
+        for (int i = 0; i < map_size_x * map_size_y / 1000; i++) {
             if (random.nextBoolean()) {
                 type = "birch";
             } else {
@@ -224,7 +230,6 @@ public class World_generating {
             double distance;
             if (start) {
                 distance = 0;
-                Unit_spawn("elf_archer", x + 20, y + 20, 0);
             } else {
                 distance = Math.pow((localities.get(0).x - x) * (localities.get(0).x - x) +
                         (localities.get(0).y - y) * (localities.get(0).y - y), 0.5);
@@ -246,8 +251,8 @@ public class World_generating {
         int coord_x, coord_y;
         do {
             city_is_near = false;
-            coord_x = random.nextInt(map_size_x / 5 - 1) * 5 + 5;
-            coord_y = random.nextInt(map_size_y / 5 - 1) * 5 + 5;
+            coord_x = random.nextInt(map_size_x / 5 - 3) * 5 + 10;
+            coord_y = random.nextInt(map_size_y / 5 - 3) * 5 + 10;
             x = ((coord_x - map_size_x / 2) * 27);
             y = ((coord_y - map_size_y / 2) * 27);
             for (int k = 0; k < localities.size(); k++) {
@@ -267,13 +272,15 @@ public class World_generating {
             Land_object camp = new Land_object(x, y, 0);
             if (random.nextBoolean()) {
                 camp.setType("camp_birch");
-                for(int i = -1; i <= 1; i ++) {
-                    Unit_spawn("elf_archer", x + i, y, 0);
+                parties.add(new Party_object("elf", x, y));
+                for(int i = -2; i <= 2; i ++) {
+                    Unit_spawn(parties.size() - 1, "elf_swordman", x + i, y + 10, 0);
                 }
             } else {
                 camp.setType("camp_fir");
-                for(int i = -1; i <= 1; i ++) {
-                    Unit_spawn("skeleton_archer", x + i, y, 0);
+                parties.add(new Party_object("skeleton", x, y));
+                for(int i = -2; i <= 2; i ++) {
+                    Unit_spawn(parties.size() - 1, "skeleton_archer", x + i, y, 0);
                 }
             }
             hexes[coord_x][coord_y].lands.add(camp);
@@ -381,8 +388,8 @@ public class World_generating {
         }
     }
 
-    void Unit_spawn(String type, double x, double y, double angle) {
-        Unit_object unit = new Unit_object(x, y, angle);
+    void Unit_spawn(int party, String type, double x, double y, double angle) {
+        Unit_object unit = new Unit_object(party, x, y, angle);
         unit.setType(type);
         double hex_x = x / 27 + map_size_x / 2;
         double hex_y = y / 27 + map_size_y / 2;
