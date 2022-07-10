@@ -1,4 +1,5 @@
 import java.lang.Math;
+import java.util.Random;
 
 class Unit_object {
     int player;
@@ -14,17 +15,21 @@ class Unit_object {
     double old_y;
 
     String weapon;
+    String arrow_type;
+    double damage;
     double attack_distance;
     int max_cooldown;
-    int max_hp;
     double speed;
+    double max_hp;
+    int exp_to_up;
+    String up1, up2;
 
     int cooldown = 0;
     String[] pics_move = new String[2];
     String[] pics_hit = new String[5];
     double size = 7;
-    double pic_size = 21;
-    int hp;
+    double pic_size = 35;
+    double hp;
     int wealth = 20000;
 
     Unit_object(int party, double x, double y, double angle) {
@@ -35,36 +40,105 @@ class Unit_object {
     }
 
     void setType(String type) {
-        if (type == "elf_archer") {
-            this.pics_move[0] = "data\\units\\elf_archer\\move0.png";
-            this.pics_move[1] = "data\\units\\elf_archer\\move1.png";
-            this.pics_hit[0] = "data\\units\\elf_archer\\shot0.png";
-            this.pics_hit[1] = "data\\units\\elf_archer\\shot4.png";
-            this.pics_hit[2] = "data\\units\\elf_archer\\shot3.png";
-            this.pics_hit[3] = "data\\units\\elf_archer\\shot2.png";
-            this.pics_hit[4] = "data\\units\\elf_archer\\shot1.png";
+        if (type == "elf_train_bow") {
+            this.pics_move[0] = "data\\units\\elf\\elf_train_bow\\move0.png";
+            this.pics_move[1] = "data\\units\\elf\\elf_train_bow\\move1.png";
+            this.pics_hit[0] = "data\\units\\elf\\elf_train_bow\\shot0.png";
+            this.pics_hit[1] = "data\\units\\elf\\elf_train_bow\\shot4.png";
+            this.pics_hit[2] = "data\\units\\elf\\elf_train_bow\\shot3.png";
+            this.pics_hit[3] = "data\\units\\elf\\elf_train_bow\\shot2.png";
+            this.pics_hit[4] = "data\\units\\elf\\elf_train_bow\\shot1.png";
             this.fraction = "elf";
             this.weapon = "bow";
-            this.attack_distance = 90;
+            this.arrow_type = "train_arrow";
+            this.attack_distance = 86;
+            this.max_cooldown = 99;
+            this.speed = 20;
+            this.max_hp = 50;
+        }
+        if (type == "elf_serjant_bow") {
+            this.pics_move[0] = "data\\units\\elf\\elf_serjant_bow\\move0.png";
+            this.pics_move[1] = "data\\units\\elf\\elf_serjant_bow\\move1.png";
+            this.pics_hit[0] = "data\\units\\elf\\elf_serjant_bow\\shot0.png";
+            this.pics_hit[1] = "data\\units\\elf\\elf_serjant_bow\\shot4.png";
+            this.pics_hit[2] = "data\\units\\elf\\elf_serjant_bow\\shot3.png";
+            this.pics_hit[3] = "data\\units\\elf\\elf_serjant_bow\\shot2.png";
+            this.pics_hit[4] = "data\\units\\elf\\elf_serjant_bow\\shot1.png";
+            this.fraction = "elf";
+            this.weapon = "bow";
+            this.arrow_type = "leather_arrow";
+            this.attack_distance = 86;
+            this.max_cooldown = 99;
+            this.speed = 20;
+            this.max_hp = 80;
+        }
+        if (type == "elf_leather_bow") {
+            this.pics_move[0] = "data\\units\\elf\\elf_leather_bow\\move0.png";
+            this.pics_move[1] = "data\\units\\elf\\elf_leather_bow\\move1.png";
+            this.pics_hit[0] = "data\\units\\elf\\elf_leather_bow\\shot0.png";
+            this.pics_hit[1] = "data\\units\\elf\\elf_leather_bow\\shot4.png";
+            this.pics_hit[2] = "data\\units\\elf\\elf_leather_bow\\shot3.png";
+            this.pics_hit[3] = "data\\units\\elf\\elf_leather_bow\\shot2.png";
+            this.pics_hit[4] = "data\\units\\elf\\elf_leather_bow\\shot1.png";
+            this.fraction = "elf";
+            this.weapon = "bow";
+            this.arrow_type = "leather_arrow";
+            this.attack_distance = 86;
             this.max_cooldown = 99;
             this.speed = 20;
             this.max_hp = 100;
         }
-        if (type == "elf_swordman") {
-            this.pics_move[0] = "data\\units\\elf_swordman\\move0.png";
-            this.pics_move[1] = "data\\units\\elf_swordman\\move1.png";
-            this.pics_hit[0] = "data\\units\\elf_swordman\\shot0.png";
-            this.pics_hit[1] = "data\\units\\elf_swordman\\shot4.png";
-            this.pics_hit[2] = "data\\units\\elf_swordman\\shot3.png";
-            this.pics_hit[3] = "data\\units\\elf_swordman\\shot2.png";
-            this.pics_hit[4] = "data\\units\\elf_swordman\\shot1.png";
+        if (type == "elf_iron_bow") {
+            this.pics_move[0] = "data\\units\\elf\\elf_iron_bow\\move0.png";
+            this.pics_move[1] = "data\\units\\elf\\elf_iron_bow\\move1.png";
+            this.pics_hit[0] = "data\\units\\elf\\elf_iron_bow\\shot0.png";
+            this.pics_hit[1] = "data\\units\\elf\\elf_iron_bow\\shot4.png";
+            this.pics_hit[2] = "data\\units\\elf\\elf_iron_bow\\shot3.png";
+            this.pics_hit[3] = "data\\units\\elf\\elf_iron_bow\\shot2.png";
+            this.pics_hit[4] = "data\\units\\elf\\elf_iron_bow\\shot1.png";
             this.fraction = "elf";
-            this.weapon = "sword";
-            this.attack_distance = 10;
-            this.max_cooldown = 49;
+            this.weapon = "bow";
+            this.arrow_type = "iron_arrow";
+            this.attack_distance = 86;
+            this.max_cooldown = 99;
+            this.speed = 20;
+            this.max_hp = 150;
+        }
+        if (type == "elf_mythril_bow") {
+            this.pics_move[0] = "data\\units\\elf\\elf_mythril_bow\\move0.png";
+            this.pics_move[1] = "data\\units\\elf\\elf_mythril_bow\\move1.png";
+            this.pics_hit[0] = "data\\units\\elf\\elf_mythril_bow\\shot0.png";
+            this.pics_hit[1] = "data\\units\\elf\\elf_mythril_bow\\shot4.png";
+            this.pics_hit[2] = "data\\units\\elf\\elf_mythril_bow\\shot3.png";
+            this.pics_hit[3] = "data\\units\\elf\\elf_mythril_bow\\shot2.png";
+            this.pics_hit[4] = "data\\units\\elf\\elf_mythril_bow\\shot1.png";
+            this.fraction = "elf";
+            this.weapon = "bow";
+            this.arrow_type = "mythril_arrow";
+            this.attack_distance = 86;
+            this.max_cooldown = 99;
+            this.speed = 20;
+            this.max_hp = 200;
+        }
+
+        if (type == "elf_serjant_spear") {
+            this.pics_move[0] = "data\\units\\elf\\elf_serjant_spear\\move0.png";
+            this.pics_move[1] = "data\\units\\elf\\elf_serjant_spear\\move1.png";
+            this.pics_hit[0] = "data\\units\\elf\\elf_serjant_spear\\shot0.png";
+            this.pics_hit[1] = "data\\units\\elf\\elf_serjant_spear\\shot4.png";
+            this.pics_hit[2] = "data\\units\\elf\\elf_serjant_spear\\shot3.png";
+            this.pics_hit[3] = "data\\units\\elf\\elf_serjant_spear\\shot2.png";
+            this.pics_hit[4] = "data\\units\\elf\\elf_serjant_spear\\shot1.png";
+            this.fraction = "elf";
+            this.weapon = "spear";
+            this.damage = 15;
+            this.attack_distance = 12;
+            this.max_cooldown = 69;
             this.speed = 20;
             this.max_hp = 100;
         }
+
+
 
         if (type == "orc_leather_twohand") {
             this.pics_move[0] = "data\\units\\orc_leather_twohand\\move0.png";
@@ -76,11 +150,11 @@ class Unit_object {
             this.pics_hit[4] = "data\\units\\orc_leather_twohand\\shot1.png";
             this.fraction = "orc";
             this.weapon = "twohand";
-            this.attack_distance = 13;
+            this.damage = 30;
+            this.attack_distance = 9;
             this.max_cooldown = 69;
             this.speed = 20;
             this.max_hp = 100;
-            this.pic_size = 35;
         }
         if (type == "orc_leather_crossbow") {
             this.pics_move[0] = "data\\units\\orc_leather_crossbow\\move0.png";
@@ -92,11 +166,11 @@ class Unit_object {
             this.pics_hit[4] = "data\\units\\orc_leather_crossbow\\shot1.png";
             this.fraction = "orc";
             this.weapon = "crossbow";
-            this.attack_distance = 90;
+            this.arrow_type = "leather_bolt";
+            this.attack_distance = 86;
             this.max_cooldown = 199;
             this.speed = 20;
             this.max_hp = 100;
-            this.pic_size = 35;
         }
 
         if (type == "goblin_mythril_sword") {
@@ -107,14 +181,31 @@ class Unit_object {
             this.pics_hit[2] = "data\\units\\goblin_mythril_sword\\shot3.png";
             this.pics_hit[3] = "data\\units\\goblin_mythril_sword\\shot2.png";
             this.pics_hit[4] = "data\\units\\goblin_mythril_sword\\shot1.png";
-            this.fraction = "orc";
+            this.fraction = "goblin";
             this.weapon = "sword";
-            this.attack_distance = 13;
+            this.damage = 30;
+            this.attack_distance = 9;
             this.max_cooldown = 49;
             this.speed = 50;
             this.max_hp = 300;
-            this.pic_size = 35;
             this.size = 15;
+        }
+
+        if (type == "elf_swordman") {
+            this.pics_move[0] = "data\\units\\elf_swordman\\move0.png";
+            this.pics_move[1] = "data\\units\\elf_swordman\\move1.png";
+            this.pics_hit[0] = "data\\units\\elf_swordman\\shot0.png";
+            this.pics_hit[1] = "data\\units\\elf_swordman\\shot4.png";
+            this.pics_hit[2] = "data\\units\\elf_swordman\\shot3.png";
+            this.pics_hit[3] = "data\\units\\elf_swordman\\shot2.png";
+            this.pics_hit[4] = "data\\units\\elf_swordman\\shot1.png";
+            this.fraction = "elf";
+            this.weapon = "sword";
+            this.damage = 20;
+            this.attack_distance = 6;
+            this.max_cooldown = 49;
+            this.speed = 20;
+            this.max_hp = 100;
         }
 
         if (type == "skeleton_archer") {
@@ -127,6 +218,7 @@ class Unit_object {
             this.pics_hit[4] = "data\\units\\skeleton_archer\\shot1.png";
             this.fraction = "skeleton";
             this.weapon = "bow";
+            this.arrow_type = "leather_arrow";
             this.attack_distance = 90;
             this.max_cooldown = 99;
             this.speed = 20;
@@ -142,14 +234,17 @@ class Unit_object {
             this.pics_hit[4] = "data\\units\\skeleton_swordman\\shot1.png";
             this.fraction = "skeleton";
             this.weapon = "sword";
-            this.attack_distance = 10;
+            this.damage = 20;
+            this.attack_distance = 6;
             this.max_cooldown = 49;
             this.speed = 20;
             this.max_hp = 100;
         }
+
+        Random random = new Random();
         this.type = type;
-        this.t_x = this.x;
-        this.t_y = this.y;
+        this.t_x = this.x + random.nextInt(81) - 40;
+        this.t_y = this.y + random.nextInt(81) - 40;
         this.old_x = this.x;
         this.old_y = this.y;
         this.hp = this.max_hp;
@@ -197,10 +292,9 @@ class Unit_object {
             return false;
         }
     }
-
     boolean sword_intersection(Unit_object unit) {
-        double x2 = this.x;
-        double y2 = this.y;
+        double x2 = this.x + Math.sin(this.angle) * 4;
+        double y2 = this.y - Math.cos(this.angle) * 4;
         double x1 = unit.x;
         double y1 = unit.y;
 
@@ -215,10 +309,22 @@ class Unit_object {
 
         double dif = this.angle - i_angle;
 
-        System.out.println(dif);
+        if ((- pi / 7 < dif) && (dif < pi / 7) || (2 * pi - pi / 7 < dif) || (-2 * pi + pi / 7 < dif)) {
+            if (gip <= unit.attack_distance) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        if ((- pi / 6 < dif) && (dif < pi / 6) || (2 * pi - pi / 6 < dif) || (-2 * pi + pi / 6 < dif)) {
-            if (gip <= 12) {
+    boolean spear_intersection(Unit_object unit) {
+        for (int i = 4; i <= this.attack_distance + 4; ++i) {
+            double x2 = this.x + Math.sin(this.angle) * i;
+            double y2 = this.y - Math.cos(this.angle) * i;
+            double x1 = unit.x;
+            double y1 = unit.y;
+            double gip = Math.pow(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2), 0.5);
+            if (gip < unit.size) {
                 return true;
             }
         }

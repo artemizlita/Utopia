@@ -274,13 +274,13 @@ public class World_generating {
                 camp.setType("camp_birch");
                 parties.add(new Party_object("elf", x, y));
                 for(int i = -2; i <= 2; i ++) {
-                    Unit_spawn(parties.size() - 1, "elf_swordman", x + i, y + 10, 0);
+                    Unit_spawn(parties.size() - 1, "elf_serjant_bow", x + i, y + 10, 0);
                 }
             } else {
                 camp.setType("camp_fir");
-                parties.add(new Party_object("skeleton", x, y));
+                parties.add(new Party_object("elf", x, y));
                 for(int i = -2; i <= 2; i ++) {
-                    Unit_spawn(parties.size() - 1, "skeleton_archer", x + i, y, 0);
+                    Unit_spawn(parties.size() - 1, "elf_train_bow", x + i, y + 10, 0);
                 }
             }
             hexes[coord_x][coord_y].lands.add(camp);
