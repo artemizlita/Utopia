@@ -40,19 +40,23 @@ public class Main extends JPanel implements ActionListener {
 //////////////////////////////////////////////////////ADD UNITS/////////////////////////////////////////////////////////
 
     void Add_units() {
-        parties.add(new Party_object("goblin", 0, 0));
+        parties.add(new Party_object("elf", 0, 0));
 
         Unit_spawn(0, "elf_serjant_spear", 0, 0, 0, true);
         for (int i = 20; i < 120; i += 30) {
             Unit_spawn(0, "elf_serjant_spear", i, -30, 0, false);
         }
-//        for (int i = 20; i < 120; i += 20) {
-//            Unit_spawn(0, "orc_leather_crossbow", i, 20, 0, false);
-//        }
+        for (int i = 20; i < 120; i += 20) {
+            Unit_spawn(0, "elf_serjant_bow", i, 20, 0, false);
+        }
 
 //        for (int i = 0; i < 20; i += 20) {
 //            Unit_spawn(0, "skeleton_archer", i, -100, 0, false);
 //        }
+    }
+
+    void Party_spawn() {
+
     }
 
     void Unit_spawn(int party, String type, double x, double y, double angle, boolean player) {
@@ -462,12 +466,11 @@ public class Main extends JPanel implements ActionListener {
         double hex_x = player_x / 27 + map_size_x / 2;
         double hex_y = player_y / 27 + map_size_y / 2;
 
-        //Unit_object player_unit = hexes[(int) hex_x][(int) hex_y].units.get(0);
-
         player_unit.old_x = player_unit.x;
         player_unit.old_y = player_unit.y;
 
-        player_unit.set_target(cursorx + player_x, cursory + player_y);
+        player_unit.set_target(player_x + cursorx * scale, player_y + cursory * scale);
+
         if (isHit) {
             if (player_unit.cooldown == 0) {
                 player_unit.cooldown = player_unit.max_cooldown;
@@ -585,13 +588,6 @@ public class Main extends JPanel implements ActionListener {
 
         unit.set_target(unit.t_x, unit.t_y);
 
-//        double attack_distance;
-//        if (unit.weapon == "bow") {
-//            attack_distance = 90;
-//        } else {
-//            attack_distance = 10;
-//        }
-
         if (mingip < unit.attack_distance + 4) {
             if (unit.cooldown == 0) {
                 unit.cooldown = unit.max_cooldown;
@@ -613,34 +609,5 @@ public class Main extends JPanel implements ActionListener {
                 }
             }
         }
-
-//        if (0 < target_cooldown && target_cooldown < 49) {
-//            Random random = new Random();
-//            if (random.nextBoolean()) {
-//                if (unit.cooldown == 0) {
-//                    double speed = unit.speed / 50;
-//                    unit.x -= Math.cos(unit.angle) * speed;
-//                    unit.y -= Math.sin(unit.angle) * speed;
-//                    unit.wealth -= 2;
-//                } else {
-//                    double speed = unit.speed / 50;
-//                    unit.x -= Math.cos(unit.angle) * speed / 2;
-//                    unit.y -= Math.sin(unit.angle) * speed / 2;
-//                    unit.wealth -= 1;
-//                }
-//            } else {
-//                if (unit.cooldown == 0) {
-//                    double speed = unit.speed / 50;
-//                    unit.x += Math.cos(unit.angle) * speed;
-//                    unit.y += Math.sin(unit.angle) * speed;
-//                    unit.wealth -= 2;
-//                } else {
-//                    double speed = unit.speed / 50;
-//                    unit.x += Math.cos(unit.angle) * speed / 2;
-//                    unit.y += Math.sin(unit.angle) * speed / 2;
-//                    unit.wealth -= 1;
-//                }
-//            }
-//        }
     }
 }

@@ -272,15 +272,15 @@ public class World_generating {
             Land_object camp = new Land_object(x, y, 0);
             if (random.nextBoolean()) {
                 camp.setType("camp_birch");
-                parties.add(new Party_object("elf", x, y));
+                parties.add(new Party_object("orc", x, y));
                 for(int i = -2; i <= 2; i ++) {
-                    Unit_spawn(parties.size() - 1, "elf_serjant_bow", x + i, y + 10, 0);
+                    Unit_spawn(parties.size() - 1, "orc_train_twohand", x + i, y + 10, 0);
                 }
             } else {
                 camp.setType("camp_fir");
-                parties.add(new Party_object("elf", x, y));
+                parties.add(new Party_object("orc", x, y));
                 for(int i = -2; i <= 2; i ++) {
-                    Unit_spawn(parties.size() - 1, "elf_train_bow", x + i, y + 10, 0);
+                    Unit_spawn(parties.size() - 1, "orc_train_twohand", x + i, y + 10, 0);
                 }
             }
             hexes[coord_x][coord_y].lands.add(camp);

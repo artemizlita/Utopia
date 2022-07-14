@@ -136,10 +136,26 @@ class Unit_object {
             this.max_cooldown = 69;
             this.speed = 20;
             this.max_hp = 100;
+            this.pic_size = 45;
         }
 
 
-
+        if (type == "orc_train_twohand") {
+            this.pics_move[0] = "data\\units\\orc\\orc_train_twohand\\move0.png";
+            this.pics_move[1] = "data\\units\\orc\\orc_train_twohand\\move1.png";
+            this.pics_hit[0] = "data\\units\\orc\\orc_train_twohand\\shot0.png";
+            this.pics_hit[1] = "data\\units\\orc\\orc_train_twohand\\shot4.png";
+            this.pics_hit[2] = "data\\units\\orc\\orc_train_twohand\\shot3.png";
+            this.pics_hit[3] = "data\\units\\orc\\orc_train_twohand\\shot2.png";
+            this.pics_hit[4] = "data\\units\\orc\\orc_train_twohand\\shot1.png";
+            this.fraction = "orc";
+            this.weapon = "twohand";
+            this.damage = 20;
+            this.attack_distance = 9;
+            this.max_cooldown = 69;
+            this.speed = 20;
+            this.max_hp = 80;
+        }
         if (type == "orc_leather_twohand") {
             this.pics_move[0] = "data\\units\\orc_leather_twohand\\move0.png";
             this.pics_move[1] = "data\\units\\orc_leather_twohand\\move1.png";
